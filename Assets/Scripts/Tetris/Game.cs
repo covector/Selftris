@@ -30,5 +30,8 @@ public class Game : MonoBehaviour
 
     }
 
-    
+    public void GameReset()
+    {
+
+    }
 }
