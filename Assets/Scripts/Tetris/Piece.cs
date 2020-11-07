@@ -13,10 +13,11 @@ public abstract class Piece
 [System.Serializable]
 public class OPiece : Piece
 {
-    private static Vector2Int[] occupationTable = new Vector2Int[] { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, -1), new Vector2Int(1, -1) };
+    private static Vector2Int[] occupationTable = new Vector2Int[] { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1) };
+    public OPiece() { }
     public override Vector2Int InitPos()
     {
-        return new Vector2Int(4, 1);
+        return new Vector2Int(4, 18);
     }
 
     public override Vector2Int[] WallKickTest(int oldRot, int direction, int curRot)
@@ -50,6 +51,7 @@ public class IPiece : Piece
         new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(-2, 0), new Vector2Int(1, 2) , new Vector2Int(-2, -1) },
         new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(2, 0), new Vector2Int(-1, 0), new Vector2Int(2, -1) , new Vector2Int(-1, 2) }
     };
+    public IPiece() { }
     public override Vector2Int InitPos()
     {
         return new Vector2Int(4, 0);

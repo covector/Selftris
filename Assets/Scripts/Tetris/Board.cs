@@ -1,10 +1,15 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.UI;
 
-[Serializable]
-public class Board
+public class Board : MonoBehaviour
 {
-    public int[][] occupancy = new int[20][];
+    public bool[][] occupancy = new bool[20][];
+    public Color[] colorOccupancy = new Color[200];
+    public Color emptyColor;
+    public Color occupiedColor;
+    public Color activeColor;
+    public RawImage renderBoard;
     public Piece curPiece;
     // TopLeft - (0, 0)
     public Vector2Int curPos;
@@ -16,13 +21,19 @@ public class Board
         3
     */
     public int curRot;
+    float dropCoolDown = 0f;
+    float lockCoolDown = 0f;
+    bool droppable = true;
+
+    public float moveCoolDown = 0f;
 
     public void ClearBoard()
     {
         for (int i = 0; i < occupancy.Length; i++)
         {
-            occupancy[i] = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            occupancy[i] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
         }
+        
     }
 
     public Piece Hold(Piece newPiece)
@@ -50,7 +61,7 @@ public class Board
     public bool Vertical(int delta)
     {
         Vector2Int vectorDelta = new Vector2Int(0, delta);
-        if (OccupationTest(curPos + vectorDelta, curRot))
+        if (OccupationTest(vectorDelta, curRot))
         {
             curPos += vectorDelta;
             return true;
@@ -58,36 +69,38 @@ public class Board
         return false;
     }
 
-    public int CheckClear()    // Only check for the lowest 4 lines
+    public int CheckClear(int startInd)    // Only check for the lowest 4 lines
     {
         int cleared = 0;
-        for (int i = 9; i >= 0; i--)
+        for (int i = startInd; i < occupancy.Length; i++)
         {
-            if (i > 5 && occupancy.Equals(new int[10] { 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 }))
+            if (i < startInd + 4 && occupancy.Equals(new bool[10] { true, true, true, true, true, true, true, true, true, true }))
             {
                 cleared++;
             }
             if (cleared > 0)
             {
-                if (i - cleared >= 0)
+                if (i + cleared >= occupancy.Length)
                 {
-                    occupancy[i] = occupancy[i - cleared];
+                    occupancy[i] = occupancy[i + cleared];
                 }
                 else
                 {
-                    occupancy[i] = new int[10] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+                    occupancy[i] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
                 }
             }
         }
         return cleared;
     }
 
-    public void Rotate(int direction)
+    public bool Rotate(int direction)
     {
         if (WallKickTest(curRot, direction, curRot))
         {
             curRot = (curRot + direction + 4) % 4;  // Assumed that |direction| <= 4
+            return true;
         }
+        return false;
     }
 
     public bool WallKickTest(int oldRot, int direction, int curRot)
@@ -100,18 +113,22 @@ public class Board
             for (int j = 0; j < checkBlock.Length; j++)
             {
                 Vector2Int pos = curPos + checkBlock[j] + wallKick[i];
-
+                
                 bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y > 19 || pos.y < 0;
-                bool occupiedTest = occupancy[pos.y][pos.x] == 1;
-
-                if (!outOfBoundTest)
+                if (outOfBoundTest)
                 {
-                    if (!occupiedTest)
-                    {
-                        curPos = pos;
-                        if (curPos.x > 9 || curPos.x < 0 || curPos.y > 19 || curPos.y < 0) { throw new IndexOutOfRangeException("Delta position provided by wall kick test is out of bound!"); }    // Debug
-                        return true;
-                    }
+                    break;
+                }
+
+                bool occupiedTest = occupancy[pos.y][pos.x];
+                if (occupiedTest)
+                {
+                    break;
+                }
+
+                if (j == checkBlock.Length - 1)
+                {
+                    return true;
                 }
             }
         }
@@ -128,14 +145,20 @@ public class Board
             Vector2Int pos = checkBlock[i] + curPos + delta;
 
             bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y > 19 || pos.y < 0;
-            bool occupiedTest = occupancy[pos.y][pos.x] == 1;
-
-            if (!outOfBoundTest)
+            if (outOfBoundTest)
             {
-                if (!occupiedTest)
-                {
-                    return true;
-                }
+                break;
+            }
+
+            bool occupiedTest = occupancy[pos.y][pos.x];
+            if (occupiedTest)
+            {
+                break;
+            }
+
+            if (i == checkBlock.Length - 1)
+            {
+                return true;
             }
         }
 
@@ -152,5 +175,81 @@ public class Board
             occupancy[i].CopyTo(flattened, width * i);
         }
         return flattened;
+    }
+
+    public void LockPiece()
+    {
+
+    }
+
+    public void Render()
+    {
+        for (int i = 0; i < occupancy.Length; i++)
+        {
+            for (int j = 0; j < occupancy[0].Length; j++)
+            {
+                if (occupancy[i][j])
+                {
+                    colorOccupancy[i * 10 + j] = occupiedColor;
+                }
+                else
+                {
+                    colorOccupancy[i * 10 + j] = emptyColor;
+                }
+            }
+        }
+        Vector2Int[] checkBlock = curPiece.OccupationTest(curRot);
+        for (int i = 0; i < checkBlock.Length; i++)
+        {
+            Vector2Int vecBlock = checkBlock[i] + curPos;
+            colorOccupancy[vecBlock.y * 10 + vecBlock.x] = activeColor;
+        }
+        Texture2D renderTexture = new Texture2D(10, 20);
+        renderTexture.SetPixels(colorOccupancy);
+        renderTexture.filterMode = FilterMode.Point;
+        renderTexture.Apply(false);
+        renderBoard.texture = renderTexture;
+    }
+
+    public void Step(float deltaTime, GameSettings settings, bool softDropping, int horizontalControl)
+    {
+        float dropMultiplier = 1f;
+        if (softDropping) { dropMultiplier = settings.dropMultiplier; }
+        dropCoolDown += deltaTime * settings.dropSpeed * dropMultiplier;
+        if (!droppable) 
+        {
+            dropCoolDown = 0f;
+            lockCoolDown += deltaTime * settings.lockSpeed;
+        }
+        else
+        {
+            lockCoolDown = 0f;
+        }
+        if (dropCoolDown > 1f)
+        {
+            dropCoolDown -= 1f;
+            droppable = Vertical(-1);
+        }
+        if (lockCoolDown > 1f)
+        {
+            LockPiece() ;
+        }
+
+        if (horizontalControl != 0)
+        {
+            moveCoolDown += deltaTime * settings.horizontalSpeed * horizontalControl;
+        }
+        else
+        {
+            moveCoolDown = 0;
+        }
+        if (moveCoolDown > 1f || moveCoolDown < -1f)
+        {
+            int direction = (int)Mathf.Sign(moveCoolDown);
+            moveCoolDown -= 1f * direction;
+            Horizontal(direction);
+        }
+
+        Render();
     }
 }

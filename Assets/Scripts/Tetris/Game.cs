@@ -3,35 +3,91 @@
 public class Game : MonoBehaviour
 {
     // Registering Player Inputs
-    Board[] playersBoard;
+    public Board[] playersBoard;
+    public bool[] held;
+    public Piece[] holdingPiece;
+    public bool[] softDropping;
+    public int[] horizontalControl;
+    public GameSettings settings;
 
-    public void HardDrop(int playerNo)
+    public void HardDrop(int playerInd)
     {
-
+        int debugging = 0;
+        while (playersBoard[playerInd].Vertical(-1))
+        {
+            // Infinite loop prevention
+            debugging++;
+            if (debugging > 30) { break; }
+        }
     }
 
-    public void SoftDrop(int playerNo, bool pressed)
+    public void SoftDrop(int playerInd, bool toggle)
     {
-
+        softDropping[playerInd] = toggle;
     }
 
-    public void Horizontal(int playerNo, int direction)
+    public void Horizontal(int playerInd, int direction)
     {
-
+        horizontalControl[playerInd] = direction;
     }
 
-    public void Hold(int playerNo)
+    public void Hold(int playerInd)
     {
-
+        if (!held[playerInd])
+        {
+            Piece returnPiece = playersBoard[playerInd].Hold(holdingPiece[playerInd]);
+            holdingPiece[playerInd] = returnPiece;
+            held[playerInd] = true;
+        }
     }
 
-    public void Rotate(int playerNo, int direction)
+    public void Rotate(int playerInd, int direction)
     {
-
+        playersBoard[playerInd].Rotate(direction);
     }
 
     public void GameReset()
     {
+        for (int i = 0; i < playersBoard.Length; i++)
+        {
+            playersBoard[i].ClearBoard();
+            Piece newPiece = InitPiece();
+            playersBoard[i].SpawnPiece(newPiece);
+        }
+    }
 
+    private Piece InitPiece()
+    {
+        Piece newPiece;
+        int randomInd = Random.Range(0, 1);
+        switch (randomInd)
+        {
+            case 0:
+                newPiece = new OPiece();
+                break;
+            case 1:
+                newPiece = new IPiece();
+                break;
+            default:
+                throw new System.IndexOutOfRangeException("Random Index Out of Bound!");
+        }
+        return newPiece;
+    }
+
+    public void SendLines(int receiverInd)
+    {
+
+    }
+
+    void Update()
+    {
+        for (int i = 0; i < playersBoard.Length; i++)
+        {
+            playersBoard[i].Step(Time.deltaTime, settings, softDropping[i], horizontalControl[i]);
+        }
+    }
+    void Start()
+    {
+        GameReset();
     }
 }
