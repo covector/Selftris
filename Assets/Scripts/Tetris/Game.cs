@@ -12,13 +12,7 @@ public class Game : MonoBehaviour
 
     public void HardDrop(int playerInd)
     {
-        int debugging = 0;
-        while (playersBoard[playerInd].Vertical(-1))
-        {
-            // Infinite loop prevention
-            debugging++;
-            if (debugging > 30) { break; }
-        }
+        playersBoard[playerInd].HardDrop();
     }
 
     public void SoftDrop(int playerInd, bool toggle)
@@ -35,7 +29,9 @@ public class Game : MonoBehaviour
     {
         if (!held[playerInd])
         {
-            Piece returnPiece = playersBoard[playerInd].Hold(holdingPiece[playerInd]);
+            Piece heldPiece = holdingPiece[playerInd];
+            if (heldPiece == null) { heldPiece = InitPiece(); }
+            Piece returnPiece = playersBoard[playerInd].Hold(heldPiece);
             holdingPiece[playerInd] = returnPiece;
             held[playerInd] = true;
         }
@@ -59,7 +55,7 @@ public class Game : MonoBehaviour
     private Piece InitPiece()
     {
         Piece newPiece;
-        int randomInd = 1;
+        int randomInd = Random.Range(0, 2);
         switch (randomInd)
         {
             case 0:
@@ -79,6 +75,12 @@ public class Game : MonoBehaviour
 
     }
 
+    public Piece RequestPiece(int playerInd)
+    {
+        held[playerInd] = false;
+        return InitPiece();
+    }
+
     void Update()
     {
         for (int i = 0; i < playersBoard.Length; i++)
@@ -88,6 +90,7 @@ public class Game : MonoBehaviour
     }
     void Start()
     {
+        holdingPiece = new Piece[1];
         GameReset();
     }
 }

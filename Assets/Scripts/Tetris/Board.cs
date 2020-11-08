@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Board : MonoBehaviour
 {
+    public int playerInd;
     public bool[][] occupancy = new bool[20][];
     public Color[] colorOccupancy = new Color[200];
     public Color emptyColor;
@@ -25,6 +27,14 @@ public class Board : MonoBehaviour
     float lockCoolDown = 0f;
 
     public float moveCoolDown;
+    public int lastMove = 0;
+
+    public Game gameManager;
+
+    private void Start()
+    {
+        gameManager = FindObjectOfType<Game>();
+    }
 
     public void ClearBoard()
     {
@@ -32,7 +42,6 @@ public class Board : MonoBehaviour
         {
             occupancy[i] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
         }
-        
     }
 
     public Piece Hold(Piece newPiece)
@@ -42,10 +51,23 @@ public class Board : MonoBehaviour
         return oldPiece;
     }
 
+    public void HardDrop()
+    {
+        int debugging = 0;
+        while (Vertical(-1))
+        {
+            // Infinite loop prevention
+            debugging++;
+            if (debugging > 30) { break; }
+        }
+        LockPiece();
+    }
+
     public void SpawnPiece(Piece newPiece)
     {
         curPiece = newPiece;
         curPos = newPiece.InitPos();
+        curRot = 0;
     }
 
     public void Horizontal(int delta)
@@ -74,26 +96,23 @@ public class Board : MonoBehaviour
         return false;
     }
 
-    public int CheckClear(int startInd)    // Only check for the lowest 4 lines
+    public int CheckClear(int startInd)
     {
         int cleared = 0;
         for (int i = startInd; i < occupancy.Length; i++)
         {
-            if (i < startInd + 4 && occupancy.Equals(new bool[10] { true, true, true, true, true, true, true, true, true, true }))
+            if (occupancy[i].All(x => x))
             {
                 cleared++;
             }
-            if (cleared > 0)
+            else
             {
-                if (i + cleared >= occupancy.Length)
-                {
-                    occupancy[i] = occupancy[i + cleared];
-                }
-                else
-                {
-                    occupancy[i] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
-                }
+                occupancy[i - cleared] = occupancy[i];
             }
+        }
+        for (int i = 0; i < cleared; i++)
+        {
+            occupancy[occupancy.Length-i-1] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
         }
         return cleared;
     }
@@ -121,7 +140,6 @@ public class Board : MonoBehaviour
                 Vector2Int pos = curPos + checkBlock[j] + wallKick[i];
                 
                 bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y > 19 || pos.y < 0;
-                Debug.Log(pos.x);
                 if (outOfBoundTest)
                 {
                     break;
@@ -187,7 +205,21 @@ public class Board : MonoBehaviour
 
     public void LockPiece()
     {
+        int stoppedHeight = 19;
+        Vector2Int[] checkBlock = curPiece.OccupationTest(curRot);
+        for (int i = 0; i < checkBlock.Length; i++)
+        {
+            Vector2Int vecBlock = checkBlock[i] + curPos;
 
+            if (vecBlock.y < stoppedHeight)
+            {
+                stoppedHeight = vecBlock.y;
+            }
+            occupancy[vecBlock.y][vecBlock.x] = true;
+        }
+        CheckClear(stoppedHeight);
+        Piece newPiece = gameManager.RequestPiece(playerInd);
+        SpawnPiece(newPiece);
     }
 
     public void Render()
@@ -221,6 +253,10 @@ public class Board : MonoBehaviour
 
     public void Step(float deltaTime, GameSettings settings, bool softDropping, int horizontalControl)
     {
+        if (horizontalControl != 0)
+        {
+            lockCoolDown = 0f;
+        }
         if (DropCheck()) 
         {
             float dropMultiplier = 1f;
@@ -256,6 +292,12 @@ public class Board : MonoBehaviour
             moveCoolDown -= horizontalControl;
             Horizontal(horizontalControl);
         }
+
+        if (lastMove != horizontalControl && horizontalControl != 0)
+        {
+            Horizontal(horizontalControl);
+        }
+        lastMove = horizontalControl;
 
         Render();
     }

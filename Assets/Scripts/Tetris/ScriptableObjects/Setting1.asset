@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Setting1
   m_EditorClassIdentifier: 
   dropSpeed: 1
-  horizontalSpeed: 3
-  accelerateDelay: 0
-  dropMultiplier: 0
+  horizontalSpeed: 10
+  accelerateDelay: 2
+  dropMultiplier: 10
   lockSpeed: 1
   spawnDelay: 0
