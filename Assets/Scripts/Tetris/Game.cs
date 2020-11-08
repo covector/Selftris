@@ -59,7 +59,7 @@ public class Game : MonoBehaviour
     private Piece InitPiece()
     {
         Piece newPiece;
-        int randomInd = Random.Range(0, 1);
+        int randomInd = 1;
         switch (randomInd)
         {
             case 0:

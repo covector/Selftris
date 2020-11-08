@@ -23,9 +23,8 @@ public class Board : MonoBehaviour
     public int curRot;
     float dropCoolDown = 0f;
     float lockCoolDown = 0f;
-    bool droppable = true;
 
-    public float moveCoolDown = 0f;
+    public float moveCoolDown;
 
     public void ClearBoard()
     {
@@ -56,6 +55,12 @@ public class Board : MonoBehaviour
         {
             curPos += vectorDelta;
         }
+    }
+
+    public bool DropCheck()
+    {
+        Vector2Int vectorDelta = new Vector2Int(0, -1);
+        return OccupationTest(vectorDelta, curRot);
     }
 
     public bool Vertical(int delta)
@@ -95,9 +100,10 @@ public class Board : MonoBehaviour
 
     public bool Rotate(int direction)
     {
-        if (WallKickTest(curRot, direction, curRot))
+        int newRot = (curRot + direction + 4) % 4;  // Assumed that |direction| <= 4
+        if (WallKickTest(curRot, direction, newRot))
         {
-            curRot = (curRot + direction + 4) % 4;  // Assumed that |direction| <= 4
+            curRot = newRot;
             return true;
         }
         return false;
@@ -115,6 +121,7 @@ public class Board : MonoBehaviour
                 Vector2Int pos = curPos + checkBlock[j] + wallKick[i];
                 
                 bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y > 19 || pos.y < 0;
+                Debug.Log(pos.x);
                 if (outOfBoundTest)
                 {
                     break;
@@ -128,6 +135,7 @@ public class Board : MonoBehaviour
 
                 if (j == checkBlock.Length - 1)
                 {
+                    curPos += wallKick[i];
                     return true;
                 }
             }
@@ -213,26 +221,26 @@ public class Board : MonoBehaviour
 
     public void Step(float deltaTime, GameSettings settings, bool softDropping, int horizontalControl)
     {
-        float dropMultiplier = 1f;
-        if (softDropping) { dropMultiplier = settings.dropMultiplier; }
-        dropCoolDown += deltaTime * settings.dropSpeed * dropMultiplier;
-        if (!droppable) 
+        if (DropCheck()) 
         {
-            dropCoolDown = 0f;
-            lockCoolDown += deltaTime * settings.lockSpeed;
+            float dropMultiplier = 1f;
+            if (softDropping) { dropMultiplier = settings.dropMultiplier; }
+            dropCoolDown += deltaTime * settings.dropSpeed * dropMultiplier;
+            if (dropCoolDown > 1f)
+            {
+                curPos += new Vector2Int(0, -1);
+                dropCoolDown -= 1f;
+            }
+            lockCoolDown = 0f;
         }
         else
         {
-            lockCoolDown = 0f;
-        }
-        if (dropCoolDown > 1f)
-        {
-            dropCoolDown -= 1f;
-            droppable = Vertical(-1);
-        }
-        if (lockCoolDown > 1f)
-        {
-            LockPiece() ;
+            dropCoolDown = 0f;
+            lockCoolDown += deltaTime * settings.lockSpeed;
+            if (lockCoolDown > 1f)
+            {
+                LockPiece();
+            }
         }
 
         if (horizontalControl != 0)
@@ -243,11 +251,10 @@ public class Board : MonoBehaviour
         {
             moveCoolDown = 0;
         }
-        if (moveCoolDown > 1f || moveCoolDown < -1f)
+        if (horizontalControl * moveCoolDown > settings.accelerateDelay)
         {
-            int direction = (int)Mathf.Sign(moveCoolDown);
-            moveCoolDown -= 1f * direction;
-            Horizontal(direction);
+            moveCoolDown -= horizontalControl;
+            Horizontal(horizontalControl);
         }
 
         Render();

@@ -11,7 +11,7 @@ public class TetrisAgent : MonoBehaviour
         gameMaster.Horizontal(playerInd, horizontal);
         gameMaster.SoftDrop(playerInd, vertical == -1);
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.UpArrow))
         {
             gameMaster.Rotate(playerInd, -1);
         }
