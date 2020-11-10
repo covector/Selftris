@@ -2,57 +2,18 @@
 
 public class Game : MonoBehaviour
 {
-    // Registering Player Inputs
     public Board[] playersBoard;
-    public bool[] held;
-    public Piece[] holdingPiece;
-    public bool[] softDropping;
-    public int[] horizontalControl;
     public GameSettings settings;
-
-    public void HardDrop(int playerInd)
-    {
-        playersBoard[playerInd].HardDrop();
-    }
-
-    public void SoftDrop(int playerInd, bool toggle)
-    {
-        softDropping[playerInd] = toggle;
-    }
-
-    public void Horizontal(int playerInd, int direction)
-    {
-        horizontalControl[playerInd] = direction;
-    }
-
-    public void Hold(int playerInd)
-    {
-        if (!held[playerInd])
-        {
-            Piece heldPiece = holdingPiece[playerInd];
-            if (heldPiece == null) { heldPiece = InitPiece(); }
-            Piece returnPiece = playersBoard[playerInd].Hold(heldPiece);
-            holdingPiece[playerInd] = returnPiece;
-            held[playerInd] = true;
-        }
-    }
-
-    public void Rotate(int playerInd, int direction)
-    {
-        playersBoard[playerInd].Rotate(direction);
-    }
 
     public void GameReset()
     {
         for (int i = 0; i < playersBoard.Length; i++)
         {
-            playersBoard[i].ClearBoard();
-            Piece newPiece = InitPiece();
-            playersBoard[i].SpawnPiece(newPiece);
+            playersBoard[i].BoardReset();
         }
     }
 
-    private Piece InitPiece()
+    public Piece RequestPiece(int playerInd)
     {
         Piece newPiece;
         int randomInd = Random.Range(0, 2);
@@ -75,22 +36,16 @@ public class Game : MonoBehaviour
 
     }
 
-    public Piece RequestPiece(int playerInd)
-    {
-        held[playerInd] = false;
-        return InitPiece();
-    }
-
     void Update()
     {
         for (int i = 0; i < playersBoard.Length; i++)
         {
-            playersBoard[i].Step(Time.deltaTime, settings, softDropping[i], horizontalControl[i]);
+            playersBoard[i].Step(Time.deltaTime);
+            playersBoard[i].Render();
         }
     }
     void Start()
     {
-        holdingPiece = new Piece[1];
         GameReset();
     }
 }

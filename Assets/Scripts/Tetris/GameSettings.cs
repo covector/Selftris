@@ -7,6 +7,7 @@ public class GameSettings : ScriptableObject
     public float horizontalSpeed;
     public float accelerateDelay;
     public float dropMultiplier;
-    public float lockSpeed;
+    public float softLockSpeed;
+    public float hardLockSpeed;
     public float spawnDelay;
 }
