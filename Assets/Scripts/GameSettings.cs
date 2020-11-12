@@ -3,6 +3,7 @@
 [CreateAssetMenu(fileName = "Data", menuName = "ScriptableObjects/GameSettings", order = 1)]
 public class GameSettings : ScriptableObject
 {
+    [Header("Game Physics")]
     public float dropSpeed;
     public float horizontalSpeed;
     public float accelerateDelay;
@@ -10,4 +11,10 @@ public class GameSettings : ScriptableObject
     public float softLockSpeed;
     public float hardLockSpeed;
     public float spawnDelay;
+
+    [Header("Game")]
+    public int playerCount;
+
+    [Header("Display")]
+    public float spacing;
 }

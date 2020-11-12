@@ -5,7 +5,7 @@ using UnityEngine.UI;
 public class Board : MonoBehaviour
 {
     public int playerInd;    // player index
-    bool[][] occupancy = new bool[20][];    // the board: true is occupied while false is empty
+    bool[][] occupancy = new bool[23][];    // the board: true is occupied while false is empty
     Piece curPiece;    // current piece
     Vector2Int curPos;    // current position
     int curRot;    // current rotation
@@ -184,6 +184,9 @@ public class Board : MonoBehaviour
             holding = curPiece;
             curPiece = gameManager.RequestPiece(playerInd);
         }
+        curPos = curPiece.InitPos();
+        curRot = 0;
+        CheckTopOut();
     }
 
     void SetHoldCS(bool value)
@@ -231,7 +234,7 @@ public class Board : MonoBehaviour
             {
                 Vector2Int pos = curPos + checkBlock[j] + wallKick[i];    // theoretical end position
 
-                bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y > 19 || pos.y < 0;    // whether the position is out of the board
+                bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y < 0 || pos.y > 22;    // whether the position is out of the board
                 if (outOfBoundTest)
                 {
                     break;
@@ -262,7 +265,7 @@ public class Board : MonoBehaviour
         {
             Vector2Int pos = checkBlock[i] + curPos + delta;    // theoretical end position
 
-            bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y > 19 || pos.y < 0;    // whether the position is out of the board
+            bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y < 0 || pos.y > 22;    // whether the position is out of the board
             if (outOfBoundTest)
             {
                 break;
@@ -290,7 +293,35 @@ public class Board : MonoBehaviour
         curPiece = gameManager.RequestPiece(playerInd);
         curPos = curPiece.InitPos();
         curRot = 0;
+        CheckTopOut();
         ResetHold();
+    }
+
+    void CheckTopOut()
+    {
+        Vector2Int[] checkBlock = curPiece.OccupationTest(curRot);    // the block offset from the origin (the origin is not the pivot for I and O piece)
+
+        for (int i = 0; i < 2; i++)     // allow 1 block above the board
+        {
+            Vector2Int offset = new Vector2Int(0, i);
+            for (int j = 0; j < checkBlock.Length; j++)
+            {
+                Vector2Int pos = checkBlock[i] + curPos + offset;    // theoretical end position
+
+                bool occupiedTest = occupancy[pos.y][pos.x];    // whether the position is occupied
+                if (!occupiedTest)
+                {
+                    curPos += offset;
+                    return;
+                }
+            }
+        }
+        ToppedOut();
+    }
+
+    void ToppedOut()
+    {
+        Debug.Log("Player " + playerInd.ToString() + " topped out!");
     }
     #endregion
 
@@ -310,7 +341,10 @@ public class Board : MonoBehaviour
             {
                 stoppedHeight = vecBlock.y;
             }
-            occupancy[vecBlock.y][vecBlock.x] = true;
+            if (vecBlock.y < 23)
+            {
+                occupancy[vecBlock.y][vecBlock.x] = true;
+            }
         }
         CheckClear(stoppedHeight);
         SpawnPiece();
@@ -348,9 +382,9 @@ public class Board : MonoBehaviour
     public void Render()
     {
         // Update colorOccupancy vector
-        for (int i = 0; i < occupancy.Length; i++)      // occupated and empty box coloring
+        for (int i = 0; i < occupancy.Length - 3; i++)      // dont render block out of the board
         {
-            for (int j = 0; j < occupancy[0].Length; j++)
+            for (int j = 0; j < occupancy[0].Length; j++)      // occupated and empty box coloring
             {
                 if (occupancy[i][j])
                 {
@@ -363,9 +397,10 @@ public class Board : MonoBehaviour
             }
         }
         Vector2Int[] checkBlock = curPiece.OccupationTest(curRot);
-        for (int i = 0; i < checkBlock.Length; i++)     // current piece coloring
+        for (int i = 0; i < checkBlock.Length; i++)
         {
             Vector2Int vecBlock = checkBlock[i] + curPos;
+            if (vecBlock.y > 19) { continue; }      // dont render block out of the board
             colorOccupancy[vecBlock.y * 10 + vecBlock.x] = activeColor;
         }
 
@@ -384,6 +419,7 @@ public class Board : MonoBehaviour
             occupancy[i] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
         }
         SpawnPiece();
+        ResetCS();
     }
 
     public void Step(float deltaTime)     // calculate game logic
@@ -408,6 +444,15 @@ public class Board : MonoBehaviour
         SetHardDropCS(hardDrop);
         SetRotCS(rotate);
         SetHoldCS(hold);
+    }
+
+    public void ResetCS()
+    {
+        SetHorizCS(0);
+        SetSoftDropCS(false);
+        SetHardDropCS(false);
+        SetRotCS(0);
+        SetHoldCS(false);
     }
     #endregion
 }

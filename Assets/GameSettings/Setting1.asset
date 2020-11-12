@@ -16,5 +16,8 @@ MonoBehaviour:
   horizontalSpeed: 10
   accelerateDelay: 2
   dropMultiplier: 10
-  lockSpeed: 1
+  softLockSpeed: 1
+  hardLockSpeed: 3
   spawnDelay: 0
+  playerCount: 2
+  spacing: 10
