@@ -10,7 +10,7 @@ public class GameSettings : ScriptableObject
     public float dropMultiplier;
     public float softLockSpeed;
     public float hardLockSpeed;
-    public float spawnDelay;
+    public int previewCount;
 
     [Header("Game")]
     public int playerCount;

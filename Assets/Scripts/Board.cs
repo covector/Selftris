@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using JetBrains.Annotations;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -56,6 +58,7 @@ public class Board : MonoBehaviour
         {
             curPos += vectorDelta;
         }
+        rotationLast = false;
     }
 
     void SetHorizCS(int value)
@@ -79,6 +82,7 @@ public class Board : MonoBehaviour
             {
                 curPos += new Vector2Int(0, -1);
                 dropCoolDown -= 1f;
+                rotationLast = false;
             }
             HardResetLocking();
         }
@@ -106,12 +110,13 @@ public class Board : MonoBehaviour
         }
     }
 
-    bool ExeVert(int delta)    // actually moving the piece horizontally
+    bool ExeVert(int delta)    // actually moving the piece vertically
     {
         Vector2Int vectorDelta = new Vector2Int(0, delta);
         if (OccupationTest(vectorDelta, curRot))
         {
             curPos += vectorDelta;
+            rotationLast = false;
             return true;
         }
         return false;
@@ -139,7 +144,10 @@ public class Board : MonoBehaviour
 
     void RegRot()     // check whether it should rotate (no need check, just for keeping code format uniform)
     {
-        ExeRot(rotateCS);
+        if (rotateCS != 0)
+        {
+            ExeRot(rotateCS);
+        }
     }
 
     void ExeRot(int direction)   // actually rotating the piece
@@ -148,6 +156,7 @@ public class Board : MonoBehaviour
         if (WallKickTest(curRot, direction, newRot))
         {
             curRot = newRot;
+            rotationLast = true;
         }
     }
 
@@ -173,19 +182,21 @@ public class Board : MonoBehaviour
 
     void ExeHold()    // actually holding the piece
     {
-        if (holding != null)    // first time holding
+        if (holding != null)    // not first time holding
         {
             Piece tempPiece = holding;
             holding = curPiece;
             curPiece = tempPiece;
         }
-        else    // not first time holding
+        else    // first time holding
         {
             holding = curPiece;
-            curPiece = gameManager.RequestPiece(playerInd);
+            curPiece = GetNext();
         }
         curPos = curPiece.InitPos();
         curRot = 0;
+        rotationLast = false;
+        offset2 = false;
         CheckTopOut();
     }
 
@@ -200,25 +211,32 @@ public class Board : MonoBehaviour
     #endregion
 
     #region Clearing
-    int CheckClear(int startInd)
+    int[] CheckClear(int startInd)
     {
         int cleared = 0;    // total line cleared
+        int perfect = startInd == 0 ? 1 : 0;    // perfect clear or not. If piece dont touch floor, impossible for perfect clear
         for (int i = startInd; i < occupancy.Length; i++)    // deleting row cleared and pulling all the other row down
         {
             if (occupancy[i].All(x => x))    // full row occupation check
             {
                 cleared++;
+                continue;   // doesnt count as non perfect clear
             }
             else    // copy a row to another row
             {
                 occupancy[i - cleared] = occupancy[i];
+            }
+
+            if (!occupancy[i].All(x => !x))    // full row empty check
+            {
+                perfect = 0;
             }
         }
         for (int i = 0; i < cleared; i++)    // filling the top with all empty box
         {
             occupancy[occupancy.Length - i - 1] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
         }
-        return cleared;
+        return new int[] { cleared, perfect };
     }
     #endregion
 
@@ -249,6 +267,8 @@ public class Board : MonoBehaviour
                 if (j == checkBlock.Length - 1)
                 {
                     curPos += wallKick[i];    // apply the translational offset since the rotation is allowed
+                    if (wallKick[i].y == -2) { offset2 = true; }    // for detecting proper tspin
+                    else { offset2 = false; }
                     return true;
                 }
             }
@@ -288,13 +308,40 @@ public class Board : MonoBehaviour
     #endregion
 
     #region Spawning
+    List<Piece> previewBuffer = new List<Piece>();
+
     void SpawnPiece()    // spawning new piece
     {
-        curPiece = gameManager.RequestPiece(playerInd);
+        curPiece = GetNext();
         curPos = curPiece.InitPos();
         curRot = 0;
+        rotationLast = false;
+        offset2 = false;
         CheckTopOut();
         ResetHold();
+    }
+
+    Piece GetNext()
+    {
+        if (settings.previewCount == 0)
+        {
+            return gameManager.RequestPiece(playerInd);
+        }
+        else
+        {
+            Piece returnPiece = previewBuffer[0];
+            previewBuffer.RemoveAt(0);
+            previewBuffer.Add(gameManager.RequestPiece(playerInd));
+            return returnPiece;
+        }
+    }
+
+    void SetUpPreview()
+    {
+        for (int i = 0; i < settings.previewCount; i++)
+        {
+            previewBuffer.Add(gameManager.RequestPiece(playerInd));
+        }
     }
 
     void CheckTopOut()
@@ -325,13 +372,89 @@ public class Board : MonoBehaviour
     }
     #endregion
 
+    #region Tspin Detection
+    public bool rotationLast = false;
+    public bool offset2 = false;
+    static Vector2Int[][] frontCheck = new Vector2Int[4][]
+    {
+        new Vector2Int[2] {  new Vector2Int(1, 1), new Vector2Int(-1, 1) },
+        new Vector2Int[2] {  new Vector2Int(-1, 1), new Vector2Int(-1, -1) },
+        new Vector2Int[2] {  new Vector2Int(-1, -1), new Vector2Int(1, -1) },
+        new Vector2Int[2] {  new Vector2Int(1, -1), new Vector2Int(1, 1) }
+    };
+    static Vector2Int[][] backCheck = new Vector2Int[4][]
+    {
+        new Vector2Int[2] {  new Vector2Int(-1, -1), new Vector2Int(1, -1) },
+        new Vector2Int[2] {  new Vector2Int(1, -1), new Vector2Int(1, 1) },
+        new Vector2Int[2] {  new Vector2Int(1, 1), new Vector2Int(-1, 1) },
+        new Vector2Int[2] {  new Vector2Int(-1, 1), new Vector2Int(-1, -1) }
+    };
+
+    int TspinCheck()
+    {
+        Vector2Int[] front = frontCheck[curRot];
+        int frontBlock = 0;
+        for (int i = 0; i < front.Length; i++)
+        {
+            Vector2Int pos = curPos + front[i];
+
+            bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y < 0;
+            if (outOfBoundTest)
+            {
+                frontBlock++;
+                continue;
+            }
+
+            bool occupiedTest = occupancy[pos.y][pos.x];
+            if (occupiedTest)
+            {
+                frontBlock++;
+                continue;
+            }
+        }
+
+        Vector2Int[] back = backCheck[curRot];
+        int backBlock = 0;
+        for (int i = 0; i < back.Length; i++)
+        {
+            Vector2Int pos = curPos + back[i];
+
+            bool outOfBoundTest = pos.x > 9 || pos.x < 0 || pos.y < 0;
+            if (outOfBoundTest)
+            {
+                backBlock++;
+                continue;
+            }
+
+            bool occupiedTest = occupancy[pos.y][pos.x];
+            if (occupiedTest)
+            {
+                backBlock++;
+                continue;
+            }
+        }
+
+        bool minRequirement = rotationLast && curPiece.pieceInd == 2 && frontBlock + backBlock >= 3;
+
+        if (minRequirement && (frontBlock == 2 || offset2))    // proper tspin
+        {
+            return 2;
+        }
+        if (minRequirement && frontBlock == 1)     // tspin mini
+        {
+            return 1;
+        }
+        return 0;
+    }
+    #endregion
+
     #region Locking
     float softLockCoolDown = 0f;
     float hardLockCoolDown = 0f;
 
     void LockPiece()
     {
-        int stoppedHeight = 19;
+        int stoppedHeight = 22;
         Vector2Int[] checkBlock = curPiece.OccupationTest(curRot);
         for (int i = 0; i < checkBlock.Length; i++)     // set stoppedheight as the y value of the lowest block
         {
@@ -346,7 +469,15 @@ public class Board : MonoBehaviour
                 occupancy[vecBlock.y][vecBlock.x] = true;
             }
         }
-        CheckClear(stoppedHeight);
+        if (stoppedHeight > 19)     // none of the blocks of the piece are in the board
+        {
+            ToppedOut();
+        }
+        int spin = TspinCheck();
+        int[] clearingInfo = CheckClear(stoppedHeight);
+        gameManager.SendLines(clearingInfo[0], spin, clearingInfo[1]);
+        rotationLast = false;
+        offset2 = false;
         SpawnPiece();
     }
 
@@ -418,6 +549,7 @@ public class Board : MonoBehaviour
         {
             occupancy[i] = new bool[10] { false, false, false, false, false, false, false, false, false, false };
         }
+        SetUpPreview();
         SpawnPiece();
         ResetCS();
     }

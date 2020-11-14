@@ -117,9 +117,12 @@ public class Game : MonoBehaviour
         bag.RemoveRange(0, 7);
     }
     #endregion
-    public void SendLines()
+    public void SendLines(int cleared, int spinType, int perfectClear)    // spinType: 0 = no tspin, 1 = mini tspin, 2 = proper tspin
     {
-
+        if (perfectClear == 1)
+        {
+            Debug.Log("Perfect Clear!");
+        }
     }
 
     void Update()
