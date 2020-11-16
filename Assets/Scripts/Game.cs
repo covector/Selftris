@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 
 public class Game : MonoBehaviour
 {
     public Board[] playersBoard;
     public GameSettings settings;
+    public GarbageLine garbageSystem;
 
     #region Initiation Methods
     public GameObject agent;
@@ -117,12 +119,29 @@ public class Game : MonoBehaviour
         bag.RemoveRange(0, 7);
     }
     #endregion
-    public void SendLines(int cleared, int spinType, int perfectClear)    // spinType: 0 = no tspin, 1 = mini tspin, 2 = proper tspin
+    public void SendLines(int cleared, int spinType, int perfectClear, int back2back, int combo)    // spinType: 0 = no tspin, 1 = mini tspin, 2 = proper tspin. perfectClear: 0 = no, 1 = yes
     {
-        if (perfectClear == 1)
+        int lines = 0;
+        switch (spinType)   // regular or tspin calculations
         {
-            Debug.Log("Perfect Clear!");
+            case 0:
+                lines = garbageSystem.regular[cleared - 1];
+                break;
+            case 1:
+                lines = garbageSystem.tspinMini[cleared - 1];
+                break;
+            case 2:
+                lines = garbageSystem.tspin[cleared - 1];
+                break;
         }
+        if (perfectClear == 1)      // perfect clear calculations
+        {
+            if (!garbageSystem.perfectClearAddition) { lines = 0; }
+            lines += garbageSystem.perfectClear;
+        }
+        int comboInd = Mathf.Min(combo, garbageSystem.combo.Length - 1);    // prevent out of bound error
+        lines += garbageSystem.Back2back * back2back + garbageSystem.combo[comboInd];
+        Debug.Log(lines);
     }
 
     void Update()

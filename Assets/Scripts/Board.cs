@@ -1,6 +1,7 @@
 ﻿using JetBrains.Annotations;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -451,6 +452,8 @@ public class Board : MonoBehaviour
     #region Locking
     float softLockCoolDown = 0f;
     float hardLockCoolDown = 0f;
+    int b2bCount = 0;
+    int comboCount = 0;
 
     void LockPiece()
     {
@@ -475,7 +478,18 @@ public class Board : MonoBehaviour
         }
         int spin = TspinCheck();
         int[] clearingInfo = CheckClear(stoppedHeight);
-        gameManager.SendLines(clearingInfo[0], spin, clearingInfo[1]);
+        if (clearingInfo[0] > 0)
+        {
+            int inB2B = (clearingInfo[0] == 4 || spin > 0)? 1 : 0;
+            b2bCount *= inB2B;
+            gameManager.SendLines(clearingInfo[0], spin, clearingInfo[1], b2bCount, comboCount);
+            b2bCount += inB2B;
+            comboCount++;
+        }
+        else
+        {
+            comboCount = 0;
+        }
         rotationLast = false;
         offset2 = false;
         SpawnPiece();
