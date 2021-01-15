@@ -6,6 +6,7 @@ public class Horiz
     private int horizCS = 0;    // Horizontal Movement Controller State
     private int lastMove = 0;   // control in the last step
     private float moveCoolDown = 0f;     // if >1 then move right, if <1 then move left
+    private float cpsCapCoolDown = 0f;
     private Tester tester;
     private GameSettings settings;
 
@@ -15,15 +16,21 @@ public class Horiz
         this.tester = tester;
     }
 
-    public Effect ExeHoriz(Vector2Int pos, int rot, float deltaTime)     // check whether the piece should move horizontally
+    public Effect ExeHoriz(Vector2Int pos, int rot, float deltaTime)     // check whether the piece should move horizontally, call every step
     {
-        // hold to Move
+        // hold to move
         moveCoolDown += deltaTime * settings.horizontalSpeed * horizCS;
 
         // change of the force direction
         if (horizCS != lastMove)
         {
             moveCoolDown = 0;
+        }
+
+        // tap to move
+        if (cpsCapCoolDown < 1f)
+        {
+            cpsCapCoolDown += deltaTime / settings.cpsCap;
         }
 
         // record last control
@@ -43,7 +50,7 @@ public class Horiz
         return new Effect(deltaX, 0, 0, softResetLock, false, move);
     }
 
-    bool IntentCheck()
+    private bool IntentCheck()
     {
         // check if the piece gain enough momentum to move
         if (horizCS * moveCoolDown > settings.accelerateDelay)
@@ -53,15 +60,16 @@ public class Horiz
         }
 
         // tap to Move
-        if (lastMove != horizCS && horizCS != 0)
+        if (lastMove != horizCS && horizCS != 0 && cpsCapCoolDown >= 1f)
         {
+            cpsCapCoolDown = 0f;
             return true;
         }
 
         return false;
     }
 
-    bool FeasibCheck(Vector2Int pos, int rot)
+    private bool FeasibCheck(Vector2Int pos, int rot)
     {
         return tester.OccupationTest(pos + new Vector2Int(horizCS, 0), rot);
     }

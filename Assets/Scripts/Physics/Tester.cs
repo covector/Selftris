@@ -5,11 +5,13 @@ public class Tester
 {
     private bool[][] occupancy;
     private CurPiece curPiece;
+
     public Tester(bool[][] occupancy, CurPiece curPiece)
     {
         this.occupancy = occupancy;
         this.curPiece = curPiece;
     }
+
     public bool OccupationTest(Vector2Int pos, int rot)    // checking whether a translation is allowed
     {
         Vector2Int[] checkBlock = curPiece.OccupationTest(rot);    // the block offset from the origin (the origin is not the pivot for I and O piece)
