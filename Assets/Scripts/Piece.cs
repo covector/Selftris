@@ -4,6 +4,17 @@
 using UnityEngine;
 
 [System.Serializable]
+public class CurPiece
+{
+    private Piece curPiece;
+
+    public Vector2Int[] OccupationTest(int rot)
+    {
+        return curPiece.OccupationTest(rot);
+    }
+}
+
+[System.Serializable]
 public abstract class Piece
 {
     public abstract int pieceInd { get; }

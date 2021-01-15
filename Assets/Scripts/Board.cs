@@ -1,72 +1,18 @@
-﻿using JetBrains.Annotations;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Board : MonoBehaviour
 {
     public int playerInd;    // player index
-    bool[][] occupancy = new bool[23][];    // the board: true is occupied while false is empty
+    bool[][] occupancy = new bool[43][];    // the board: true is occupied while false is empty
     Piece curPiece;    // current piece
     Vector2Int curPos;    // current position
     int curRot;    // current rotation
     public Game gameManager;
     public GameSettings settings;
 
-    #region Horizontal
-    int horizCS = 0;    // Horizontal Movement Controller State
-    int lastMove = 0;   // control in the last step
-    float moveCoolDown = 0f;     // if >1 then move right, if <1 then move left
-
-    void RegHoriz(float deltaTime)     // check whether the piece should move horizontally
-    {
-        // Hold to Move
-        moveCoolDown += deltaTime * settings.horizontalSpeed * horizCS;
-
-        if (horizCS != lastMove)      // change of the force direction
-        {
-            moveCoolDown = 0;
-        }
-
-        if (horizCS * moveCoolDown > settings.accelerateDelay)    // check if the piece gain enough momentum to move
-        {
-            moveCoolDown -= horizCS;
-            ExeHoriz(horizCS);
-        }
-
-        // Tap to Move
-        if (lastMove != horizCS && horizCS != 0)
-        {
-            ExeHoriz(horizCS);
-        }
-
-        // Record Move
-        lastMove = horizCS;
-
-        // Reset Locking due to Horizontal Movement
-        if (horizCS != 0)
-        {
-            SoftResetLocking();
-        }
-    }
-
-    void ExeHoriz(int delta)    // actually moving the piece horizontally
-    {
-        Vector2Int vectorDelta = new Vector2Int(delta, 0);
-        if (OccupationTest(vectorDelta, curRot))
-        {
-            curPos += vectorDelta;
-        }
-        rotationLast = false;
-    }
-
-    void SetHorizCS(int value)
-    {
-        horizCS = value;
-    }
-    #endregion
 
     #region Vertical
     bool softDropCS = false;    // Soft Drop Controller State
@@ -171,6 +117,7 @@ public class Board : MonoBehaviour
     bool holdCS = false;    // Hold Controller State
     bool canHold = true;   // whether the player can hold or not
     Piece holding;   // the piece that is holding
+    bool[][] holdPanel = new bool[20][];
 
     void RegHold()    // check whether it should hold
     {
@@ -208,6 +155,11 @@ public class Board : MonoBehaviour
     void ResetHold()    // allow player to hold again
     {
         canHold = true;
+    }
+
+    void UpdateHoldPanel(Piece piece)
+    {
+
     }
     #endregion
 
@@ -310,6 +262,7 @@ public class Board : MonoBehaviour
 
     #region Spawning
     List<Piece> previewBuffer = new List<Piece>();
+    bool[][] previewPanel = new bool[20][];
 
     void SpawnPiece()    // spawning new piece
     {
@@ -370,6 +323,11 @@ public class Board : MonoBehaviour
     void ToppedOut()
     {
         Debug.Log("Player " + playerInd.ToString() + " topped out!");
+    }
+
+    void UpdatePreviewPanel(Piece piece)
+    {
+
     }
     #endregion
 
@@ -467,7 +425,7 @@ public class Board : MonoBehaviour
             {
                 stoppedHeight = vecBlock.y;
             }
-            if (vecBlock.y < 23)
+            if (vecBlock.y < checkBlock.Length)
             {
                 occupancy[vecBlock.y][vecBlock.x] = true;
             }
@@ -515,10 +473,113 @@ public class Board : MonoBehaviour
             LockPiece();
         }
     }
+
+    #endregion
+
+    #region Garbage
+    List<int> delayQueue;
+    List<float> delayQueueDelay;
+    List<int> garbageQueue;
+
+    public void DelayQueuing(int lines, float delay)
+    {
+        float wait = delay;
+        for (int i = 0; i < delayQueue.Count; i++)
+        {
+            wait -= delayQueueDelay[i];
+        }
+        delayQueue.Add(lines);
+        delayQueueDelay.Add(wait);
+    }
+
+    void Queuing(int lines)
+    {
+        garbageQueue.Add(lines);
+    }
+
+    void EvaluateQueue()
+    {
+        for (int i = 0; i < garbageQueue.Count; i++)
+        {
+            SpawningLines(garbageQueue[0]);
+        }
+        garbageQueue = new List<int>();
+    }
+
+    void SpawningLines(int lines)
+    {
+        int emptyInd = Random.Range(0, 10);
+        bool[] garbageLine = new bool[10] { true, true, true, true, true, true, true, true, true, true };
+        for (int i = occupancy.Length; i >= lines; i++)
+        {
+            occupancy[i] = occupancy[i - lines];
+        }
+        for (int i = 0; i < lines; i++)
+        {
+            occupancy[i] = garbageLine.ToArray();
+        }
+    }
+
+    void DelayQueueStep(float deltaTime)
+    {
+        if (delayQueue.Count == 0) { return; }
+        delayQueueDelay[0] -= deltaTime;
+        for (int i = 0; i < 300; i++)
+        {
+            if (delayQueueDelay[0] <= 0)
+            {
+                Queuing(delayQueue[0]);
+                delayQueue.RemoveAt(0);
+                delayQueueDelay.RemoveAt(0);
+            }
+            else { break; }
+        }
+    }
+
+    int LineCancelling(int lines)   // return line left for sending
+    {
+        int left = lines;
+        int queueLength = garbageQueue.Count;
+        for (int i = 0; i < queueLength; i++)
+        {
+            int temp = left;
+            left -= garbageQueue[0];
+            garbageQueue[0] -= temp;
+            
+            if (garbageQueue[0] <= 0)
+            {
+                garbageQueue.RemoveAt(0);
+            }
+            if (left <= 0)
+            {
+                return 0;
+            }
+        }
+
+        int delayQueueLength = delayQueue.Count;
+        for (int i = 0; i < delayQueueLength; i++)
+        {
+            int temp = left;
+            left -= delayQueue[0];
+            delayQueue[0] -= temp;
+
+            if (garbageQueue[0] <= 0)
+            {
+                delayQueue.RemoveAt(0);
+                delayQueueDelay.RemoveAt(0);
+            }
+            if (left <= 0)
+            {
+                return 0;
+            }
+        }
+
+        return left;
+    }
     #endregion
 
     #region Public Methods
-    Color[] colorOccupancy = new Color[200];     // flattened board
+    Color[] colorOccupancy = new Color[400];     // flattened board
     public Color emptyColor;
     public Color occupiedColor;
     public Color activeColor;   // color for the current piece
@@ -527,7 +588,7 @@ public class Board : MonoBehaviour
     public void Render()
     {
         // Update colorOccupancy vector
-        for (int i = 0; i < occupancy.Length - 3; i++)      // dont render block out of the board
+        for (int i = 0; i < 20; i++)      // dont render block out of the board
         {
             for (int j = 0; j < occupancy[0].Length; j++)      // occupated and empty box coloring
             {
