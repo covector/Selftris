@@ -2,7 +2,7 @@
 {
     public abstract class Logic
     {
-        private Player player;
+        protected Player player;
 
         public abstract void Update(float dt);
 

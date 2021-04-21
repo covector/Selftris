@@ -6,13 +6,11 @@ namespace Selftris.Tetris.Engine.Logics
     {
         public Board() {}
 
-        private Player player;
-
         private const int ceilingHeight = 43;
-        int[][] occupancy = new int[ceilingHeight][];
-        int curPieceID;
-        Vector2Int curPiecePos;
-        int curPieceRot;
+        public int[][] occupancy = new int[ceilingHeight][];
+        public int curPieceID;
+        public Vector2Int curPiecePos;
+        public int curPieceRot;
 
         public override void Update(float dt) {}
 

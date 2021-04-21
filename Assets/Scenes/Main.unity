@@ -176,7 +176,7 @@ Camera:
   far clip plane: 1000
   field of view: 60
   orthographic: 1
-  orthographic size: 5
+  orthographic size: 10.88
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -214,10 +214,13 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
+  - component: {fileID: 1007248126}
+  - component: {fileID: 1007248125}
   - component: {fileID: 1007248124}
   - component: {fileID: 1007248123}
+  - component: {fileID: 1007248127}
   m_Layer: 0
-  m_Name: Environment
+  m_Name: TetrisBoard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -232,18 +235,50 @@ MonoBehaviour:
   m_GameObject: {fileID: 1007248122}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 465f19b4a2ee12648b5d1846b9060829, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f6b255c9bf06784dbba1ee4408940eb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playersBoard: []
-  settings: {fileID: 11400000, guid: 396ac80e27990e8479f56388820bb922, type: 2}
-  garbageSystem: {fileID: 11400000, guid: 2ba9c744feacb544aa8ec2d1b554ee92, type: 2}
-  agent: {fileID: 2101427843432401764, guid: c4c0a27800bccbd4d80bffc53e9ce2f9, type: 3}
-  bag: 
-  bagInd: -1
-  playerBagInd: 
---- !u!4 &1007248124
-Transform:
+  emptyColor: {r: 0.16037738, g: 0.16037738, b: 0.16037738, a: 1}
+  occupiedColor: {r: 1, g: 1, b: 1, a: 1}
+  activeColor: {r: 0.5943396, g: 0.5943396, b: 0.5943396, a: 1}
+  renderBoard: {fileID: 1007248124}
+--- !u!114 &1007248124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007248122}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Texture: {fileID: 0}
+  m_UVRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 1
+    height: 1
+--- !u!222 &1007248125
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007248122}
+  m_CullTransparentMesh: 1
+--- !u!224 &1007248126
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -256,6 +291,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 10, y: 20}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &1007248127
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1007248122}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1 &1982091384
 GameObject:
   m_ObjectHideFlags: 0
