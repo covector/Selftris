@@ -11,6 +11,7 @@ public class GameSettings : ScriptableObject
     public float softLockSpeed;
     public float hardLockSpeed;
     public int previewCount;
+    public float actionDelay;
 
     [Header("Game")]
     public int playerCount;

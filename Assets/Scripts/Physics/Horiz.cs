@@ -3,75 +3,73 @@
 [System.Serializable]
 public class Horiz
 {
-    private int horizCS = 0;    // Horizontal Movement Controller State
     private int lastMove = 0;   // control in the last step
     private float moveCoolDown = 0f;     // if >1 then move right, if <1 then move left
-    private float cpsCapCoolDown = 0f;
+    private float actionDelayCoolDown = 0f;
     private Tester tester;
     private GameSettings settings;
+    private BoardState state;
 
-    public Horiz(GameSettings settings, Tester tester)
+    public Horiz(GameSettings settings, Tester tester, BoardState state)
     {
         this.settings = settings;
         this.tester = tester;
+        this.state = state;
     }
 
-    public Effect ExeHoriz(Vector2Int pos, int rot, float deltaTime)     // check whether the piece should move horizontally, call every step
+    public void ExeHoriz(int horiz, float deltaTime)     // check whether the piece should move horizontally, call every step
     {
         // hold to move
-        moveCoolDown += deltaTime * settings.horizontalSpeed * horizCS;
+        moveCoolDown += deltaTime * settings.horizontalSpeed * horiz;
 
         // change of the force direction
-        if (horizCS != lastMove)
+        if (horiz != lastMove)
         {
             moveCoolDown = 0;
         }
 
         // tap to move
-        if (cpsCapCoolDown < 1f)
+        if (actionDelayCoolDown < settings.actionDelay)
         {
-            cpsCapCoolDown += deltaTime / settings.cpsCap;
+            actionDelayCoolDown += deltaTime;
         }
 
         // record last control
-        lastMove = horizCS;
+        lastMove = horiz;
 
         // reset Locking due to Horizontal Movement
-        bool softResetLock = horizCS != 0;
+        state.resetSoftLock(horiz != 0);
 
         // register hoizontal movement
-        int deltaX = 0;
-        bool move = IntentCheck() && FeasibCheck(pos, rot);
+        bool move = IntentCheck(horiz) && FeasibCheck(horiz);
         if (move)
         {
-            deltaX = horizCS;
+            state.deltaX(horiz);
         }
-
-        return new Effect(deltaX, 0, 0, softResetLock, false, move);
     }
 
-    private bool IntentCheck()
+    private bool IntentCheck(int horiz)
     {
         // check if the piece gain enough momentum to move
-        if (horizCS * moveCoolDown > settings.accelerateDelay)
+        if (horiz * moveCoolDown > settings.accelerateDelay)
         {
-            moveCoolDown -= horizCS;
+            moveCoolDown -= horiz;
             return true;
         }
 
         // tap to Move
-        if (lastMove != horizCS && horizCS != 0 && cpsCapCoolDown >= 1f)
+        if (lastMove != horiz && horiz != 0 && actionDelayCoolDown >= settings.actionDelay)
         {
-            cpsCapCoolDown = 0f;
+            actionDelayCoolDown = 0f;
             return true;
         }
 
         return false;
     }
 
-    private bool FeasibCheck(Vector2Int pos, int rot)
+    private bool FeasibCheck(int horiz)
     {
-        return tester.OccupationTest(pos + new Vector2Int(horizCS, 0), rot);
+        return tester.OccupationTest(state.pos + new Vector2Int(horiz, 0), state.rot);
     }
 }
 

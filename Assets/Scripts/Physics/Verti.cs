@@ -6,23 +6,23 @@ public class Verti
     private bool softDropCS = false;    // Soft Drop Controller State
     private bool hardDropCS = false;    // Hard Drop Controller State
     private float dropCoolDown = 0f;     // if >1 then drop 1 block
+    private bool lastMove = false;   // Last hardDropCS
+    private float actionDelayCoolDown = 0f;
     private Tester tester;
     private GameSettings settings;
+    private BoardState state;
 
-    public Verti(GameSettings settings, Tester tester)
+    public Verti(GameSettings settings, Tester tester, BoardState state)
     {
         this.settings = settings;
         this.tester = tester;
+        this.state = state;
     }
 
-    public Effect ExeVerti(Vector2Int pos, int rot, float deltaTime)     // check whether the piece should drop, call every step
+    public void ExeVerti(float deltaTime)     // check whether the piece should drop, call every step
     {
-        bool hardResetLock = false;
-        bool resetRotIsLast = false;
-        int deltaY = 0;
-
         // check if dropping is allowed
-        if (DropCheck(pos, rot))
+        if (DropCheck(state.pos, state.rot))
         {
             // increment cooldown
             float dropMultiplier = 1f;
@@ -32,29 +32,35 @@ public class Verti
             // check if it can actually drop
             if (dropCoolDown > 1f)
             {
-                deltaY = -1;
-                resetRotIsLast = false;
+                state.deltaY(-1);
+                state.rotIsLast = false;
                 dropCoolDown -= 1f;
             }
 
             // prevent locking mid air
-            hardResetLock = true;
+            state.resetHardLock();
         }
         else    // there must be something blocking beneath
         {
             dropCoolDown = 0f;
         }
-
-        return new Effect(0, deltaY, 0, false, hardResetLock, resetRotIsLast);
     }
 
-    public Effect ExeHardDrop(Vector2Int pos, int rot)     // check whether it should hard drop, call every step
+    public void ExeHardDrop(float deltaTime)     // check whether it should hard drop, call every step
     {
         int deltaY = 0;
-        bool resetRotIsLast = false;
+
+        // increment cps cap timer
+        if (actionDelayCoolDown < settings.actionDelay)
+        {
+            actionDelayCoolDown += deltaTime;
+        }
+
+        // record last control to prevent multiple harddrop when holding, force to release then press again
+        lastMove = hardDropCS;
 
         // check if there is an intention to hard drop
-        if (hardDropCS)
+        if (lastMove != hardDropCS && hardDropCS && actionDelayCoolDown >= settings.actionDelay)
         {
 #if UNITY_EDITOR
             // debugging var
@@ -62,11 +68,11 @@ public class Verti
 #endif
 
             // keep moving down until not allowed anymore
-            while (DropCheck(pos + new Vector2Int(0, deltaY), rot))
+            while (DropCheck(state.pos + new Vector2Int(0, deltaY), state.rot))
             {
                 // move down 1 unit
                 deltaY--;
-                resetRotIsLast = true;
+                state.rotIsLast = false;
 
 #if UNITY_EDITOR
                 // Infinite loop prevention
@@ -74,12 +80,11 @@ public class Verti
                 if (debugging > 50) { Debug.Log("Infinite Loop Occured"); break; }
 #endif
             }
+            state.deltaY(deltaY);
 
-            // set hard drop controller state to false to prevent double hard dropping
-            hardDropCS = false;
+            // reset cps cap timer
+            actionDelayCoolDown = 0f;
         }
-
-        return new Effect(0, deltaY, 0, false, false, resetRotIsLast);
     }
 
     private bool DropCheck(Vector2Int pos, int rot)    // check if dropping downward by 1 block is allowed
