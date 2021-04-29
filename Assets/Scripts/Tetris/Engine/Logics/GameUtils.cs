@@ -2,9 +2,9 @@
 
 namespace Selftris.Tetris.Engine.Logics
 {
-    class Util : Logic
+    class GameUtils : Logic
     {
-        public Util() { }
+        public GameUtils() { }
 
         public override void Update(float dt) { }
 

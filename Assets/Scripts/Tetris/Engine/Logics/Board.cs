@@ -14,7 +14,7 @@ namespace Selftris.Tetris.Engine.Logics
 
         public override void Update(float dt) {}
 
-        public void Clear()
+        public void Clear()     // clear the board to empty
         {
 
         }

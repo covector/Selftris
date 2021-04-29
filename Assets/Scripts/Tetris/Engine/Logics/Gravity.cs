@@ -35,10 +35,10 @@ namespace Selftris.Tetris.Engine.Logics
             }
         }
 
-        private bool DropCheck()
+        private bool DropCheck() // check if the block can go down 1 unit without intersection
         {
             Board board = (Board)GetLogic("board");
-            return ((Util)GetLogic("util")).CheckOccupation(board.curPieceID, board.curPiecePos - new Vector2Int(0, 1), board.curPieceRot);
+            return ((GameUtils)GetLogic("utils")).CheckOccupation(board.curPieceID, board.curPiecePos - new Vector2Int(0, 1), board.curPieceRot);
         }
     }
 }

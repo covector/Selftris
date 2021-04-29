@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using System.Linq;
 
 namespace Selftris.Tetris.Engine {
+    /// <summary>
+    /// Contains all the logics and states of one player in a Tetris game.
+    /// <br />
+    /// Usually stored inside of <see cref="Game.players" />
+    /// </summary>
     public class Player
     {
-        public Player(int index)
+        public Player(int index, Game game)
         {
             this.index = index;
+            this.game = game;
             logics = new Dictionary<string, Logic>();
+            logicPriority = new string[] { };
 
-            logics.Add("board", new Board());
-            logics.Add("cs", new ControllerStates());
-            logics.Add("util", new Util());
-            logics.Add("gravity", new Gravity());
+            AddLogic("board", new Board());
+            AddLogic("cs", new ControllerStates());
+            AddLogic("utils", new GameUtils());
+            AddLogic("gravity", new Gravity());
 
             foreach (Logic l in logics.Values)
             {
@@ -21,21 +28,22 @@ namespace Selftris.Tetris.Engine {
             }
         }
 
-        private int index;
+        public int index;
+        public Game game;
         public bool alive = true;
         private Dictionary<string, Logic> logics;
+        private string[] logicPriority;
 
-        public void AddLogic(string key, Logic logic)
-        {
-            logic.InjectParent(this);
-            logics.Add(key, logic);
-        }
-
+        /// <summary>
+        /// Tells all logics of this player to calculate 
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <returns></returns>
         public bool Update(float dt)
         {
-            foreach (Logic l in logics.Values)
+            for (int i = 0; i < logicPriority.Length; i++)
             {
-                l.Update(dt);
+                logics[logicPriority[i]].Update(dt);
             }
             return alive;
         }
@@ -47,12 +55,20 @@ namespace Selftris.Tetris.Engine {
 
         public string[] GetAllLogicKey()
         {
-            return logics.Keys.ToArray();
+            return logicPriority;
+        }
+
+        public void AddLogic(string key, Logic logic, int priority = -1)
+        {
+            logic.InjectParent(this);
+            logics.Add(key, logic);
+            logicPriority = Utils.InsertAt(logicPriority, priority, key);
         }
 
         public void RemoveLogic(string key)
         {
             logics.Remove(key);
+            logicPriority = Utils.RemoveFrom(logicPriority, key);
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Selftris.Tetris.Engine
             players = new Player[playerCount];
             for (int i = 0; i < playerCount; i++)
             {
-                players[i] = new Player(i);
+                players[i] = new Player(i, this);
             }
         }
 

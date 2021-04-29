@@ -41,7 +41,7 @@ namespace Selftris.Tetris.Unity
                         curPieceRot = 0,
                         curPiecePos = new Vector2Int(4, 20),
                         occupancy = GetEmptyOccupancy(),
-                        include = new string[] { "board", "util", "cs", "gravity" }
+                        include = new string[] { "board", "utils", "cs", "gravity" }
                     };
                     testScenario.occupancy[2] = new int[10] { -1, -1, -1, -1, 0, -1, -1, -1, -1, -1 };
                     testScenario.occupancy[1] = new int[10] { -1, -1, -1, -1, 0, 0, -1, -1, -1, -1 };
@@ -53,16 +53,18 @@ namespace Selftris.Tetris.Unity
 
         private void Start()
         {
-            player = new Player(0);
+            player = new Player(0, null);
             PiecesManager.InitInfo();
 
-            TestScenario scenario = GetScenario("gravity");
+            // set up the scenario
+            TestScenario scenario = GetScenario("render");
             Board board = (Board) player.GetLogic("board");
             board.curPieceID = scenario.curPieceID;
             board.curPieceRot = scenario.curPieceRot;
             board.curPiecePos = scenario.curPiecePos;
             board.occupancy = scenario.occupancy;
 
+            // remove all logics that are not in the include array
             string[] allLogics = player.GetAllLogicKey();
             for (int i = 0; i < allLogics.Length; i++)
             {
@@ -72,7 +74,10 @@ namespace Selftris.Tetris.Unity
                 }
             }
 
+            // add the board renderer logic
             player.AddLogic("renderer", new BoardRenderer(emptyColor, occupiedColor, activeColor, renderBoard));
+
+            //foreach (string key in player.GetAllLogicKey()) { Debug.Log(key); }
         }
 
         private int[][] GetEmptyOccupancy()
