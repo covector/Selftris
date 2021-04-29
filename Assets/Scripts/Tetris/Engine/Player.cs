@@ -9,10 +9,11 @@ namespace Selftris.Tetris.Engine {
     /// </summary>
     public class Player
     {
-        public Player(int index, Game game)
+        public Player(int index, Game game, LogicConfig config)
         {
             this.index = index;
             this.game = game;
+            this.config = config;
             logics = new Dictionary<string, Logic>();
             logicPriority = new string[] { };
 
@@ -30,6 +31,7 @@ namespace Selftris.Tetris.Engine {
         public int index;
         public Game game;
         public bool alive = true;
+        public LogicConfig config;
         private Dictionary<string, Logic> logics;
         private string[] logicPriority;
 
@@ -60,6 +62,7 @@ namespace Selftris.Tetris.Engine {
         public void AddLogic(string key, Logic logic, int priority = -1)
         {
             logic.InjectParent(this);
+            logic.UpdateConfig(config);
             logics.Add(key, logic);
             logicPriority = Utils.InsertAt(logicPriority, priority, key);
         }

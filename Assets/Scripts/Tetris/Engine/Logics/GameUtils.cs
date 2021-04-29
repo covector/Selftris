@@ -6,6 +6,8 @@
 
         public override void Update(float dt) { }
 
+        public override void UpdateConfig(LogicConfig config) { }
+
         public bool CheckOccupation(int ID, Position pos, int rot)
         {
             Board board = (Board)GetLogic("board");

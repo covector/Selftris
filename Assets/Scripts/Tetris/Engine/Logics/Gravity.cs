@@ -33,6 +33,8 @@
             }
         }
 
+        public override void UpdateConfig(LogicConfig config) { }
+
         private bool DropCheck() // check if the block can go down 1 unit without intersection
         {
             Board board = (Board)GetLogic("board");

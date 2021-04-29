@@ -10,6 +10,7 @@
 
         public override void Update(float dt) {}
 
+        public override void UpdateConfig(LogicConfig config) { }
         public void ResetToDefault()
         {
             softDropCS = false;

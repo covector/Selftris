@@ -3,12 +3,12 @@ namespace Selftris.Tetris.Engine
 {
     public class Game
     {
-        public Game(int playerCount)
+        public Game(GameConfig config)
         {
-            players = new Player[playerCount];
-            for (int i = 0; i < playerCount; i++)
+            players = new Player[config.playerCount];
+            for (int i = 0; i < config.playerCount; i++)
             {
-                players[i] = new Player(i, this);
+                players[i] = new Player(i, this, config.logicConfig);
             }
         }
 
@@ -41,5 +41,17 @@ namespace Selftris.Tetris.Engine
 
         public bool[] playerAlive { get; }
         public bool gameEnded { get; }
+    }
+
+    public readonly struct GameConfig
+    {
+        public GameConfig(int playerCount, LogicConfig logicConfig)
+        {
+            this.playerCount = playerCount;
+            this.logicConfig = logicConfig;
+        }
+
+        public int playerCount { get; }
+        public LogicConfig logicConfig { get; }
     }
 }

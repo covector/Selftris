@@ -53,7 +53,8 @@ namespace Selftris.Tetris.Unity
 
         private void Start()
         {
-            player = new Player(0, null);
+            LogicConfig config = new LogicConfig(1f);
+            player = new Player(0, null, config);
             PiecesManager.InitInfo();
 
             // set up the scenario

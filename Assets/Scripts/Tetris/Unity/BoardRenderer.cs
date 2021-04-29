@@ -33,6 +33,8 @@ namespace Selftris.Tetris.Unity
             renderBoard.texture = renderTexture;
         }
 
+        public override void UpdateConfig(LogicConfig config) { }
+
         public void Render()
         {
             Board board = (Board) GetLogic("board");

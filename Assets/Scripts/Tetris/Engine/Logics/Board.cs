@@ -12,6 +12,8 @@
 
         public override void Update(float dt) {}
 
+        public override void UpdateConfig(LogicConfig config) { }
+
         public void Clear()     // clear the board to empty
         {
 

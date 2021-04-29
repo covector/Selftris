@@ -15,5 +15,17 @@
         {
             return player.GetLogic(key);
         }
+
+        public abstract void UpdateConfig(LogicConfig config);
+    }
+
+    public readonly struct LogicConfig
+    {
+        public LogicConfig(float dropSpeed)
+        {
+            this.dropSpeed = dropSpeed;
+        }
+
+        public float dropSpeed { get; }
     }
 }
