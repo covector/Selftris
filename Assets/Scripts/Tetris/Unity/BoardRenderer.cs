@@ -46,10 +46,10 @@ namespace Selftris.Tetris.Unity
                 }
             }
 
-            Vector2Int[] checkBlock = PiecesManager.GetOccupation(board.curPieceID, board.curPieceRot);
+            Position[] checkBlock = PiecesManager.GetOccupation(board.curPieceID, board.curPieceRot);
             for (int i = 0; i < checkBlock.Length; i++)
             {
-                Vector2Int vecBlock = checkBlock[i] + board.curPiecePos;
+                Position vecBlock = checkBlock[i] + board.curPiecePos;
                 if (vecBlock.y >= displayHeight) { continue; }      // dont render block out of the board
                 colorOccupancy[vecBlock.y * 10 + vecBlock.x] = activeColor;
             }

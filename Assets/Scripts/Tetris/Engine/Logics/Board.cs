@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Selftris.Tetris.Engine.Logics
+﻿namespace Selftris.Tetris.Engine.Logics
 {
     class Board : Logic
     {
@@ -9,8 +7,8 @@ namespace Selftris.Tetris.Engine.Logics
         private const int ceilingHeight = 43;
         public int[][] occupancy = new int[ceilingHeight][];
         public int curPieceID;
-        public Vector2Int curPiecePos;
-        public int curPieceRot;
+        public Position curPiecePos;
+        public Rotation curPieceRot;
 
         public override void Update(float dt) {}
 

@@ -1,6 +1,4 @@
-﻿using UnityEngine;
-
-namespace Selftris.Tetris.Engine.Logics
+﻿namespace Selftris.Tetris.Engine.Logics
 {
     class Gravity : Logic
     {
@@ -38,7 +36,7 @@ namespace Selftris.Tetris.Engine.Logics
         private bool DropCheck() // check if the block can go down 1 unit without intersection
         {
             Board board = (Board)GetLogic("board");
-            return ((GameUtils)GetLogic("utils")).CheckOccupation(board.curPieceID, board.curPiecePos - new Vector2Int(0, 1), board.curPieceRot);
+            return ((GameUtils)GetLogic("utils")).CheckOccupation(board.curPieceID, board.curPiecePos - new Position(0, 1), board.curPieceRot);
         }
     }
 }

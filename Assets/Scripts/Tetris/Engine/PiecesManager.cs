@@ -1,12 +1,10 @@
-﻿using UnityEngine;
-
-namespace Selftris.Tetris.Engine
+﻿namespace Selftris.Tetris.Engine
 {
     public static class PiecesManager
     {
         private static Piece[] pieces;
 
-        public static Vector2Int[] GetOccupation(int ID, int rot)
+        public static Position[] GetOccupation(int ID, int rot)
         {
             return pieces[ID].occupationTable[rot];
         }
@@ -26,11 +24,11 @@ namespace Selftris.Tetris.Engine
         private static Piece O()
         {
             return new Piece {
-                initPos = new Vector2Int(4, 18),
-                occupationTable = new Vector2Int[1][] {
-                    new Vector2Int[4] { new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(1, 1) }
+                initPos = new Position(4, 18),
+                occupationTable = new Position[1][] {
+                    new Position[4] { new Position(0, 0), new Position(1, 0), new Position(0, 1), new Position(1, 1) }
                 },
-                wallKickTable = new Vector2Int[][] { new Vector2Int[] { } }
+                wallKickTable = new Position[][] { new Position[] { } }
             };
         }
 
@@ -38,23 +36,23 @@ namespace Selftris.Tetris.Engine
         {
             return new Piece
             {
-                initPos = new Vector2Int(4, 19),
-                occupationTable = new Vector2Int[4][] {
-                    new Vector2Int[4] {  new Vector2Int(-1, 0), new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(2, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, -2), new Vector2Int(0, -1), new Vector2Int(0, 0), new Vector2Int(0, 1) },
-                    new Vector2Int[4] {  new Vector2Int(2, -1), new Vector2Int(1, -1), new Vector2Int(0, -1), new Vector2Int(-1, -1) },
-                    new Vector2Int[4] {  new Vector2Int(1, -1), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(1, 2) }
+                initPos = new Position(4, 19),
+                occupationTable = new Position[4][] {
+                    new Position[4] {  new Position(-1, 0), new Position(0, 0), new Position(1, 0), new Position(2, 0) },
+                    new Position[4] {  new Position(0, -2), new Position(0, -1), new Position(0, 0), new Position(0, 1) },
+                    new Position[4] {  new Position(2, -1), new Position(1, -1), new Position(0, -1), new Position(-1, -1) },
+                    new Position[4] {  new Position(1, -1), new Position(1, 0), new Position(1, 1), new Position(1, 2) }
                 },
-                wallKickTable = new Vector2Int[8][]
+                wallKickTable = new Position[8][]
                 {
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-2, 0), new Vector2Int(1, 0), new Vector2Int(-2, -1) , new Vector2Int(1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(-2, 0), new Vector2Int(1, -2) , new Vector2Int(-2, 1) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(2, 0), new Vector2Int(-1, 0), new Vector2Int(2, 1) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(2, 0), new Vector2Int(-1, 2) , new Vector2Int(2, -1) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(2, 0), new Vector2Int(-1, 2) , new Vector2Int(2, -1) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-2, 0), new Vector2Int(1, 0), new Vector2Int(-2, -1) , new Vector2Int(1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(-2, 0), new Vector2Int(1, -2) , new Vector2Int(-2, 1) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(2, 0), new Vector2Int(-1, 0), new Vector2Int(2, 1) , new Vector2Int(-1, -2) }
+                    new Position[5] {  new Position(0, 0), new Position(-2, 0), new Position(1, 0), new Position(-2, -1) , new Position(1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(-2, 0), new Position(1, -2) , new Position(-2, 1) },
+                    new Position[5] {  new Position(0, 0), new Position(2, 0), new Position(-1, 0), new Position(2, 1) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(2, 0), new Position(-1, 2) , new Position(2, -1) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(2, 0), new Position(-1, 2) , new Position(2, -1) },
+                    new Position[5] {  new Position(0, 0), new Position(-2, 0), new Position(1, 0), new Position(-2, -1) , new Position(1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(-2, 0), new Position(1, -2) , new Position(-2, 1) },
+                    new Position[5] {  new Position(0, 0), new Position(2, 0), new Position(-1, 0), new Position(2, 1) , new Position(-1, -2) }
                 }
             };
         }
@@ -63,23 +61,23 @@ namespace Selftris.Tetris.Engine
         {
             return new Piece
             {
-                initPos = new Vector2Int(4, 18),
-                occupationTable = new Vector2Int[4][] {
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(-1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(-1, 0), new Vector2Int(0, -1) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(0, -1), new Vector2Int(1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, -1), new Vector2Int(1, 0), new Vector2Int(0, 1) }
+                initPos = new Position(4, 18),
+                occupationTable = new Position[4][] {
+                    new Position[4] {  new Position(0, 0), new Position(1, 0), new Position(0, 1), new Position(-1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, 0), new Position(0, -1) },
+                    new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(0, 1) }
                 },
-                wallKickTable = new Vector2Int[8][]
+                wallKickTable = new Position[8][]
                 {
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) }
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -88,23 +86,23 @@ namespace Selftris.Tetris.Engine
         {
             return new Piece
             {
-                initPos = new Vector2Int(4, 18),
-                occupationTable = new Vector2Int[4][] {
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(1, 1), new Vector2Int(0, 1), new Vector2Int(-1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(-1, 1), new Vector2Int(-1, 0), new Vector2Int(0, -1) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(-1, -1), new Vector2Int(0, -1), new Vector2Int(1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(1, -1), new Vector2Int(1, 0), new Vector2Int(0, 1) }
+                initPos = new Position(4, 18),
+                occupationTable = new Position[4][] {
+                    new Position[4] {  new Position(0, 0), new Position(1, 1), new Position(0, 1), new Position(-1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(-1, 1), new Position(-1, 0), new Position(0, -1) },
+                    new Position[4] {  new Position(0, 0), new Position(-1, -1), new Position(0, -1), new Position(1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(1, -1), new Position(1, 0), new Position(0, 1) }
                 },
-                wallKickTable = new Vector2Int[8][]
+                wallKickTable = new Position[8][]
                 {
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) }
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -113,23 +111,23 @@ namespace Selftris.Tetris.Engine
         {
             return new Piece
             {
-                initPos = new Vector2Int(4, 18),
-                occupationTable = new Vector2Int[4][] {
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(0, 1), new Vector2Int(-1, 1) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(-1, 0), new Vector2Int(-1, -1) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(0, -1), new Vector2Int(1, -1) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, -1), new Vector2Int(1, 0), new Vector2Int(1, 1) }
+                initPos = new Position(4, 18),
+                occupationTable = new Position[4][] {
+                    new Position[4] {  new Position(0, 0), new Position(1, 0), new Position(0, 1), new Position(-1, 1) },
+                    new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, 0), new Position(-1, -1) },
+                    new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, -1) },
+                    new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(1, 1) }
                 },
-                wallKickTable = new Vector2Int[8][]
+                wallKickTable = new Position[8][]
                 {
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) }
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -138,23 +136,23 @@ namespace Selftris.Tetris.Engine
         {
             return new Piece
             {
-                initPos = new Vector2Int(4, 18),
-                occupationTable = new Vector2Int[4][] {
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(-1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(-1, 1), new Vector2Int(0, -1) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, -1), new Vector2Int(1, -1), new Vector2Int(0, 1) }
+                initPos = new Position(4, 18),
+                occupationTable = new Position[4][] {
+                    new Position[4] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(-1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, 1), new Position(0, -1) },
+                    new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, -1), new Position(0, 1) }
                 },
-                wallKickTable = new Vector2Int[8][]
+                wallKickTable = new Position[8][]
                 {
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) }
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -163,23 +161,23 @@ namespace Selftris.Tetris.Engine
         {
             return new Piece
             {
-                initPos = new Vector2Int(4, 18),
-                occupationTable = new Vector2Int[4][] {
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(-1, 1), new Vector2Int(-1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, 1), new Vector2Int(-1, -1), new Vector2Int(0, -1) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(1, -1), new Vector2Int(1, 0) },
-                    new Vector2Int[4] {  new Vector2Int(0, 0), new Vector2Int(0, -1), new Vector2Int(1, 1), new Vector2Int(0, 1) }
+                initPos = new Position(4, 18),
+                occupationTable = new Position[4][] {
+                    new Position[4] {  new Position(0, 0), new Position(1, 0), new Position(-1, 1), new Position(-1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, -1), new Position(0, -1) },
+                    new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(1, -1), new Position(1, 0) },
+                    new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, 1), new Position(0, 1) }
                 },
-                wallKickTable = new Vector2Int[8][]
+                wallKickTable = new Position[8][]
                 {
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, 1), new Vector2Int(0, -2) , new Vector2Int(1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, -1), new Vector2Int(0, 2) , new Vector2Int(-1, 2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(-1, 0), new Vector2Int(-1, 1), new Vector2Int(0, -2) , new Vector2Int(-1, -2) },
-                    new Vector2Int[5] {  new Vector2Int(0, 0), new Vector2Int(1, 0), new Vector2Int(1, -1), new Vector2Int(0, 2) , new Vector2Int(1, 2) }
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }

@@ -1,6 +1,5 @@
 ﻿using Selftris.Tetris.Engine.Logics;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Selftris.Tetris.Engine {
     /// <summary>

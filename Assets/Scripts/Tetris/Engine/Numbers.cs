@@ -94,6 +94,8 @@ namespace Selftris.Tetris.Engine
             return new Rotation((a.value - b.value + 4) % 4);
         }
 
+        public static implicit operator int(Rotation d) => d.value;
+
         public override string ToString()
         {
             return value.ToString();

@@ -25,8 +25,8 @@ namespace Selftris.Tetris.Unity
                     testScenario = new TestScenario
                     {
                         curPieceID = 0,
-                        curPieceRot = 0,
-                        curPiecePos = new Vector2Int(4, 10),
+                        curPieceRot = new Rotation(0),
+                        curPiecePos = new Position(4, 10),
                         occupancy = GetEmptyOccupancy(),
                         include = new string[] { "board" }
                     };
@@ -38,8 +38,8 @@ namespace Selftris.Tetris.Unity
                     testScenario = new TestScenario
                     {
                         curPieceID = 0,
-                        curPieceRot = 0,
-                        curPiecePos = new Vector2Int(4, 20),
+                        curPieceRot = new Rotation(0),
+                        curPiecePos = new Position(4, 20),
                         occupancy = GetEmptyOccupancy(),
                         include = new string[] { "board", "utils", "cs", "gravity" }
                     };
@@ -57,7 +57,7 @@ namespace Selftris.Tetris.Unity
             PiecesManager.InitInfo();
 
             // set up the scenario
-            TestScenario scenario = GetScenario("render");
+            TestScenario scenario = GetScenario("gravity");
             Board board = (Board) player.GetLogic("board");
             board.curPieceID = scenario.curPieceID;
             board.curPieceRot = scenario.curPieceRot;
@@ -99,8 +99,8 @@ namespace Selftris.Tetris.Unity
     struct TestScenario
     {
         public int curPieceID;
-        public int curPieceRot;
-        public Vector2Int curPiecePos;
+        public Rotation curPieceRot;
+        public Position curPiecePos;
         public int[][] occupancy;
         public string[] include;
     }

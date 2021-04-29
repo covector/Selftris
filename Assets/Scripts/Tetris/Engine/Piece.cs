@@ -1,11 +1,9 @@
-﻿using UnityEngine;
-
-namespace Selftris.Tetris.Engine
+﻿namespace Selftris.Tetris.Engine
 {
     public struct Piece
     {
-        public Vector2Int initPos;
-        public Vector2Int[][] occupationTable;
-        public Vector2Int[][] wallKickTable;
+        public Position initPos;
+        public Position[][] occupationTable;
+        public Position[][] wallKickTable;
     }
 }
