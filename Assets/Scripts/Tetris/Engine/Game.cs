@@ -20,7 +20,8 @@ namespace Selftris.Tetris.Engine
             int aliveCount = 0;
             for (int i = 0; i < players.Length; i++)
             {
-                bool alive = players[i].Update(dt);
+                players[i].Update(dt);
+                bool alive = players[i].alive;
                 if (alive)
                 {
                     playerAlive[i] = true;
