@@ -1,5 +1,6 @@
 ﻿using Selftris.Tetris.Engine.Logics;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Selftris.Tetris.Engine {
     public class Player
@@ -10,6 +11,9 @@ namespace Selftris.Tetris.Engine {
             logics = new Dictionary<string, Logic>();
 
             logics.Add("board", new Board());
+            logics.Add("cs", new ControllerStates());
+            logics.Add("util", new Util());
+            logics.Add("gravity", new Gravity());
 
             foreach (Logic l in logics.Values)
             {
@@ -27,11 +31,6 @@ namespace Selftris.Tetris.Engine {
             logics.Add(key, logic);
         }
 
-        public Logic GetLogic(string key)
-        {
-            return logics[key];
-        }
-
         public bool Update(float dt)
         {
             foreach (Logic l in logics.Values)
@@ -39,6 +38,21 @@ namespace Selftris.Tetris.Engine {
                 l.Update(dt);
             }
             return alive;
+        }
+
+        public Logic GetLogic(string key)
+        {
+            return logics[key];
+        }
+
+        public string[] GetAllLogicKey()
+        {
+            return logics.Keys.ToArray();
+        }
+
+        public void RemoveLogic(string key)
+        {
+            logics.Remove(key);
         }
     }
 }

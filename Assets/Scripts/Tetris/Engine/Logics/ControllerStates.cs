@@ -4,13 +4,15 @@
     {
         public ControllerStates() {}
 
-        public int horizontalCS { get; set; }
-        public bool softDropCS { get; set; }
-        public bool hardDropCS { get; set; }
+        public int horizontalCS;
+        public bool softDropCS = false;
+        public bool hardDropCS;
 
-        public override void Update(float dt)
+        public override void Update(float dt) {}
+
+        public void ResetToDefault()
         {
-
+            softDropCS = false;
         }
     }
 }

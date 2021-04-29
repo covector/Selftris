@@ -10,5 +10,10 @@
         {
             player = parent;
         }
+
+        protected Logic GetLogic(string key)
+        {
+            return player.GetLogic(key);
+        }
     }
 }

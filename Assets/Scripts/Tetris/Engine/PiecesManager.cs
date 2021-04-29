@@ -6,9 +6,9 @@ namespace Selftris.Tetris.Engine
     {
         private static Piece[] pieces;
 
-        public static Piece QueryPiece(int ID)
+        public static Vector2Int[] GetOccupation(int ID, int rot)
         {
-            return pieces[ID];
+            return pieces[ID].occupationTable[rot];
         }
 
         public static void InitInfo()

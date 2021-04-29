@@ -5,7 +5,7 @@ using Selftris.Tetris.Engine.Logics;
 
 namespace Selftris.Tetris.Unity
 {
-    public class BoardRenderer : Logic
+    class BoardRenderer : Logic
     {
         public BoardRenderer(Color emptyColor, Color occupiedColor, Color activeColor, RawImage renderBoard)
         {
@@ -35,7 +35,7 @@ namespace Selftris.Tetris.Unity
 
         public void Render()
         {
-            Board board = (Board) player.GetLogic("board");
+            Board board = (Board) GetLogic("board");
 
             // Update colorOccupancy vector
             for (int i = 0; i < displayHeight; i++)      // dont render block out of the board
@@ -46,7 +46,7 @@ namespace Selftris.Tetris.Unity
                 }
             }
 
-            Vector2Int[] checkBlock = PiecesManager.QueryPiece(board.curPieceID).occupationTable[board.curPieceRot];
+            Vector2Int[] checkBlock = PiecesManager.GetOccupation(board.curPieceID, board.curPieceRot);
             for (int i = 0; i < checkBlock.Length; i++)
             {
                 Vector2Int vecBlock = checkBlock[i] + board.curPiecePos;

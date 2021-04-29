@@ -2,7 +2,7 @@
 
 namespace Selftris.Tetris.Engine.Logics
 {
-    public class Board : Logic
+    class Board : Logic
     {
         public Board() {}
 
