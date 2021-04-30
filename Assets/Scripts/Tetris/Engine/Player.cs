@@ -51,7 +51,7 @@ namespace Selftris.Tetris.Engine {
         /// Executes logics in the order of their priority.
         /// This is called every step in the game loop.
         /// </summary>
-        /// <param name="dt">Seconds passed since last execution of logics.</param>
+        /// <param name="dt">Seconds past since last execution of logics.</param>
         public void Update(float dt)
         {
             for (int i = 0; i < logicPriority.Length; i++)

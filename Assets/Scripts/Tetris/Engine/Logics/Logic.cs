@@ -16,11 +16,11 @@ namespace Selftris.Tetris.Engine.Logics
         /// The main function to perform that particular task it is responsible for.
         /// This is called every step in the game loop.
         /// </summary>
-        /// <param name="dt">Seconds passed since last execution of this function.</param>
+        /// <param name="dt">Seconds past since last execution of this function.</param>
         public abstract void Update(float dt);
 
         /// <summary>
-        /// Link the player variable to the Player instance that owns this logic.
+        /// Link to the Player instance that owns this logic.
         /// </summary>
         /// <param name="parent">The Player instance that owns this logic.</param>
         public void InjectParent(Player parent)

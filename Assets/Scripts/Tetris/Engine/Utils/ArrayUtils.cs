@@ -2,8 +2,25 @@
 
 namespace Selftris.Tetris.Engine.Utils
 {
+    /// <summary>
+    /// Array utilities class.
+    /// </summary>
     public static class ArrayUtils
     {
+        /// <summary>
+        /// Insert into the middle of an array.
+        /// </summary>
+        /// <param name="originalArr">The original array.</param>
+        /// <param name="at">The index to insert at.</param>
+        /// <param name="content">The object to be inserted.</param>
+        /// <returns>The modified array.</returns>
+        /// <example>
+        /// <code>
+        /// int[] intArr = new int[] { 0, 1, 2, 3 };
+        /// intArr = InsertAt(intArr, 2, 6);
+        /// // intArr is { 0, 1, 6, 2, 3 }
+        /// </code>
+        /// </example>
         public static T[] InsertAt<T>(T[] originalArr, int at, T content)
         {
             T[] newArr = new T[originalArr.Length + 1];
@@ -21,6 +38,19 @@ namespace Selftris.Tetris.Engine.Utils
             return newArr;
         }
 
+        /// <summary>
+        /// Remove an object from an array.
+        /// </summary>
+        /// <param name="originalArr">The original array.</param>
+        /// <param name="content">The object to be removed.</param>
+        /// <returns>The modified array.</returns>
+        /// <example>
+        /// <code>
+        /// int[] intArr = new int[] { 0, 1, 2, 3 };
+        /// intArr = RemoveFrom(intArr, 2);
+        /// // intArr is { 0, 1, 3 }
+        /// </code>
+        /// </example>
         public static T[] RemoveFrom<T>(T[] originalArr, T content)
         {
             return originalArr.Where(val => !val.Equals(content)).ToArray();

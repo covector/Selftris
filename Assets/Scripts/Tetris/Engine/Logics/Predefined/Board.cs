@@ -6,7 +6,7 @@ namespace Selftris.Tetris.Engine.Logics.Predefined
     /// <summary>
     /// Responsible for storing the board current state and information of the current piece.
     /// </summary>
-    /// <remarks>Dependent logics: <see cref="SharedPredefined.PiecesManager"></see></remarks>
+    /// <remarks>Dependent logics: <see cref="SharedPredefined.PiecesManager"/></remarks>
     public class Board : Logic
     {
         public Board() {}
