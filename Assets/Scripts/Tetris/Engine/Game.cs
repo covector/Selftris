@@ -26,7 +26,7 @@ namespace Selftris.Tetris.Engine
             }
 
             // Register shared logics
-            if ((gameConfig.sharedLogicSelector & (uint)SharedLogicEnum.PIECES) > 0) { AddSharedLogic("pieces", new PiecesManager()); }
+            if (MathUtils.MatchBinary(gameConfig.sharedLogicSelector, SharedLogicEnum.PIECES)) { AddSharedLogic("pieces", new PiecesManager()); }
         }
 
         public Player[] players { get; }

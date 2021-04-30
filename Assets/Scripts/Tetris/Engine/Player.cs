@@ -25,21 +25,26 @@ namespace Selftris.Tetris.Engine {
             logicPriority = new string[] {};
 
             // Register logics
-            if ((selectedLogic & (uint)LogicEnum.BOARD) > 0) { AddLogic("board", new Board()); }
-            if ((selectedLogic & (uint)LogicEnum.CS) > 0) { AddLogic("cs", new ControllerStates()); }
-            if ((selectedLogic & (uint)LogicEnum.UTILS) > 0) { AddLogic("utils", new GameUtils()); }
-            if ((selectedLogic & (uint)LogicEnum.GRAVITY) > 0) { AddLogic("gravity", new Gravity()); }
+            if (MathUtils.MatchBinary(selectedLogic, LogicEnum.BOARD)) { AddLogic("board", new Board()); }
+            if (MathUtils.MatchBinary(selectedLogic, LogicEnum.CS)) { AddLogic("cs", new ControllerStates()); }
+            if (MathUtils.MatchBinary(selectedLogic, LogicEnum.UTILS)) { AddLogic("utils", new GameUtils()); }
+            if (MathUtils.MatchBinary(selectedLogic, LogicEnum.GRAVITY)) { AddLogic("gravity", new Gravity()); }
         }
 
         /// <summary>The player index for uniquely identifying a player in a game.</summary>
         public int index;
+
         /// <summary>Reference of the Game instance that owns this player object.</summary>
         public Game game;
+
         /// <summary>Whether or not this player is still alive in the game.</summary>
         public bool alive = true;
+
         /// <summary>Configuration for the logics.</summary>
         public LogicConfig logicConfig;
+
         private Dictionary<string, Logic> logics;
+
         private string[] logicPriority;
 
         /// <summary>

@@ -40,6 +40,8 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
 
         public void InitInfo()
         {
+            Position[][] wallKick = SZJLTWallKickTable();
+
             pieces = new Piece[7];
             pieces[0] = O();
             pieces[1] = I();
@@ -48,6 +50,11 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
             pieces[4] = Z();
             pieces[5] = J();
             pieces[6] = L();
+
+            for (int i = 2; i < 7; i++)
+            {
+                pieces[i].wallKickTable = wallKick;
+            }
         }
 
         private static Piece O()
@@ -74,14 +81,14 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
                 },
                 wallKickTable = new Position[8][]
                 {
-                    new Position[5] {  new Position(0, 0), new Position(-2, 0), new Position(1, 0), new Position(-2, -1) , new Position(1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(-2, 0), new Position(1, -2) , new Position(-2, 1) },
-                    new Position[5] {  new Position(0, 0), new Position(2, 0), new Position(-1, 0), new Position(2, 1) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(2, 0), new Position(-1, 2) , new Position(2, -1) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(2, 0), new Position(-1, 2) , new Position(2, -1) },
-                    new Position[5] {  new Position(0, 0), new Position(-2, 0), new Position(1, 0), new Position(-2, -1) , new Position(1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(-2, 0), new Position(1, -2) , new Position(-2, 1) },
-                    new Position[5] {  new Position(0, 0), new Position(2, 0), new Position(-1, 0), new Position(2, 1) , new Position(-1, -2) }
+                    new Position[5] { new Position(0, 0), new Position(-2, 0), new Position(1, 0), new Position(-2, -1) , new Position(1, 2) },
+                    new Position[5] { new Position(0, 0), new Position(1, 0), new Position(-2, 0), new Position(1, -2) , new Position(-2, 1) },
+                    new Position[5] { new Position(0, 0), new Position(2, 0), new Position(-1, 0), new Position(2, 1) , new Position(-1, -2) },
+                    new Position[5] { new Position(0, 0), new Position(-1, 0), new Position(2, 0), new Position(-1, 2) , new Position(2, -1) },
+                    new Position[5] { new Position(0, 0), new Position(-1, 0), new Position(2, 0), new Position(-1, 2) , new Position(2, -1) },
+                    new Position[5] { new Position(0, 0), new Position(-2, 0), new Position(1, 0), new Position(-2, -1) , new Position(1, 2) },
+                    new Position[5] { new Position(0, 0), new Position(1, 0), new Position(-2, 0), new Position(1, -2) , new Position(-2, 1) },
+                    new Position[5] { new Position(0, 0), new Position(2, 0), new Position(-1, 0), new Position(2, 1) , new Position(-1, -2) }
                 }
             };
         }
@@ -96,17 +103,6 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
                     new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, 0), new Position(0, -1) },
                     new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, 0) },
                     new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(0, 1) }
-                },
-                wallKickTable = new Position[8][]
-                {
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -121,17 +117,6 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
                     new Position[4] {  new Position(0, 0), new Position(-1, 1), new Position(-1, 0), new Position(0, -1) },
                     new Position[4] {  new Position(0, 0), new Position(-1, -1), new Position(0, -1), new Position(1, 0) },
                     new Position[4] {  new Position(0, 0), new Position(1, -1), new Position(1, 0), new Position(0, 1) }
-                },
-                wallKickTable = new Position[8][]
-                {
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -146,17 +131,6 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
                     new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, 0), new Position(-1, -1) },
                     new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(0, -1), new Position(1, -1) },
                     new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, 0), new Position(1, 1) }
-                },
-                wallKickTable = new Position[8][]
-                {
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -171,17 +145,6 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
                     new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, 1), new Position(0, -1) },
                     new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(1, 0) },
                     new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, -1), new Position(0, 1) }
-                },
-                wallKickTable = new Position[8][]
-                {
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
             };
         }
@@ -196,18 +159,22 @@ namespace Selftris.Tetris.Engine.Logics.SharedPredefined
                     new Position[4] {  new Position(0, 0), new Position(0, 1), new Position(-1, -1), new Position(0, -1) },
                     new Position[4] {  new Position(0, 0), new Position(-1, 0), new Position(1, -1), new Position(1, 0) },
                     new Position[4] {  new Position(0, 0), new Position(0, -1), new Position(1, 1), new Position(0, 1) }
-                },
-                wallKickTable = new Position[8][]
-                {
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
-                    new Position[5] {  new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
-                    new Position[5] {  new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
                 }
+            };
+        }
+
+        private static Position[][] SZJLTWallKickTable()
+        {
+            return new Position[8][]
+            {
+                new Position[5] { new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                new Position[5] { new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                new Position[5] { new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
+                new Position[5] { new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) },
+                new Position[5] { new Position(0, 0), new Position(1, 0), new Position(1, 1), new Position(0, -2) , new Position(1, -2) },
+                new Position[5] { new Position(0, 0), new Position(-1, 0), new Position(-1, -1), new Position(0, 2) , new Position(-1, 2) },
+                new Position[5] { new Position(0, 0), new Position(-1, 0), new Position(-1, 1), new Position(0, -2) , new Position(-1, -2) },
+                new Position[5] { new Position(0, 0), new Position(1, 0), new Position(1, -1), new Position(0, 2) , new Position(1, 2) }
             };
         }
     }

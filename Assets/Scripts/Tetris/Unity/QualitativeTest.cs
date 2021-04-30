@@ -6,6 +6,7 @@ using System.Linq;
 using Selftris.Tetris.Engine.Types;
 using Selftris.Tetris.Engine.Configs;
 using Selftris.Tetris.Engine.Logics.Predefined;
+using Selftris.Tetris.Engine.Logics.SharedPredefined;
 
 namespace Selftris.Tetris.Unity
 {
@@ -41,7 +42,7 @@ namespace Selftris.Tetris.Unity
                 case "gravity":
                     testScenario = new TestScenario
                     {
-                        curPieceID = 0,
+                        curPieceID = 2,
                         curPieceRot = new Rotation(0),
                         curPiecePos = new Position(4, 20),
                         occupancy = GetEmptyOccupancy(),

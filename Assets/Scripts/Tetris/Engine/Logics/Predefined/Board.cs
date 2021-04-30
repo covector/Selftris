@@ -13,13 +13,17 @@ namespace Selftris.Tetris.Engine.Logics.Predefined
 
         /// <summary>The height of the upper limit of the board. Pieces will not be stored if they lock at a spot above this.</summary>
         private const int ceilingHeight = 43;
+
         /// <summary>The current state of the board.<br />
         /// -1 means the position is empty. Otherwise it corresponds to the ID of the piece that occupied that position.</summary>
         public int[][] occupancy = new int[ceilingHeight][];
+
         /// <summary>Current piece ID.</summary>
         public int curPieceID;
+
         /// <summary>Current piece position</summary>
         public Position curPiecePos;
+
         /// <summary>Current piece rotation</summary>
         public Rotation curPieceRot;
 

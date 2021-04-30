@@ -15,7 +15,12 @@
         /// </summary>
         public Position[][] occupationTable;
 
-        /// <summary></summary>
+        /// <summary>
+        /// Store the wall kick test informations.
+        /// If it rotates clockwisely, the 1st index is the orientation before rotation.
+        /// If it rotates anti-clockwisely, the 1st index is the orientation before rotation +4.
+        /// The 2nd index corresponds to the index of the wall kick test.
+        /// </summary>
         public Position[][] wallKickTable;
     }
 }
