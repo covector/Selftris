@@ -1,4 +1,7 @@
-﻿namespace Selftris.Tetris.Engine.Logics
+﻿using Selftris.Tetris.Engine.Configs;
+using Selftris.Tetris.Engine.Types;
+
+namespace Selftris.Tetris.Engine.Logics.Predefined
 {
     class Gravity : Logic
     {

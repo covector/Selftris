@@ -1,9 +1,8 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 
-namespace Selftris.Tetris.Engine
+namespace Selftris.Tetris.Engine.Utils
 {
-    public static class Utils
+    public static class ArrayUtils
     {
         public static T[] InsertAt<T>(T[] originalArr, int at, T content)
         {

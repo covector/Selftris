@@ -1,15 +1,44 @@
-﻿namespace Selftris.Tetris.Engine
-{
-    public static class PiecesManager
-    {
-        private static Piece[] pieces;
+﻿using Selftris.Tetris.Engine.Configs;
+using Selftris.Tetris.Engine.Types;
 
-        public static Position[] GetOccupation(int ID, int rot)
+namespace Selftris.Tetris.Engine.Logics.SharedPredefined
+{
+    public class PiecesManager : SharedLogic
+    {
+        public PiecesManager()
+        {
+            InitInfo();
+        }
+
+        public override void Update(float dt) { }
+
+        public override void UpdateConfig(SharedLogicConfig config) { }
+
+        private Piece[] pieces;
+
+        /// <summary>
+        /// Get the relative positions of all the blocks to the piece.
+        /// </summary>
+        /// <param name="ID">The piece ID.</param>
+        /// <param name="rot">The piece rotation.</param>
+        /// <returns>Array of relative positions.</returns>
+        /// <example>
+        /// <code>
+        /// // This will print out the positions on the board of all the blocks in the current piece
+        /// Position[] relPos = piece.occupationTable[board.curPieceRot]
+        /// for (int i = 0; i < relPos.Length; i++)
+        /// {
+        ///     Position absPos = board.curPiecePos + relPos[i];
+        ///     Console.WriteLine(absPos.ToString());
+        /// }
+        /// </code>
+        /// </example>
+        public Position[] GetOccupation(int ID, int rot)
         {
             return pieces[ID].occupationTable[rot];
         }
 
-        public static void InitInfo()
+        public void InitInfo()
         {
             pieces = new Piece[7];
             pieces[0] = O();

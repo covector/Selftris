@@ -1,4 +1,6 @@
-﻿namespace Selftris.Tetris.Engine.Logics
+﻿using Selftris.Tetris.Engine.Configs;
+
+namespace Selftris.Tetris.Engine.Logics.Predefined
 {
     class ControllerStates : Logic
     {

@@ -3,12 +3,15 @@ using UnityEngine.UI;
 using Selftris.Tetris.Engine;
 using Selftris.Tetris.Engine.Logics;
 using System.Linq;
+using Selftris.Tetris.Engine.Types;
+using Selftris.Tetris.Engine.Configs;
+using Selftris.Tetris.Engine.Logics.Predefined;
 
 namespace Selftris.Tetris.Unity
 {
     class QualitativeTest : MonoBehaviour
     {
-        Player player;
+        Game game;
 
         public Color emptyColor;
         public Color occupiedColor;
@@ -28,7 +31,8 @@ namespace Selftris.Tetris.Unity
                         curPieceRot = new Rotation(0),
                         curPiecePos = new Position(4, 10),
                         occupancy = GetEmptyOccupancy(),
-                        include = (uint) PredefLogic.BOARD
+                        includeLogic = (uint)LogicEnum.BOARD,
+                        includeSharedLogic = (uint)SharedLogicEnum.PIECES
                     };
                     testScenario.occupancy[2] = new int[10] { -1, -1, -1, -1, -1, -1, 0, -1, -1, -1 };
                     testScenario.occupancy[1] = new int[10] { -1, -1, -1, -1, 0, 0, -1, -1, -1, -1 };
@@ -41,7 +45,8 @@ namespace Selftris.Tetris.Unity
                         curPieceRot = new Rotation(0),
                         curPiecePos = new Position(4, 20),
                         occupancy = GetEmptyOccupancy(),
-                        include = (uint)(PredefLogic.BOARD | PredefLogic.UTILS | PredefLogic.CS | PredefLogic.GRAVITY)
+                        includeLogic = (uint)(LogicEnum.BOARD | LogicEnum.UTILS | LogicEnum.CS | LogicEnum.GRAVITY),
+                        includeSharedLogic = (uint)SharedLogicEnum.PIECES
                     };
                     testScenario.occupancy[2] = new int[10] { -1, -1, -1, -1, 0, -1, -1, -1, -1, -1 };
                     testScenario.occupancy[1] = new int[10] { -1, -1, -1, -1, 0, 0, -1, -1, -1, -1 };
@@ -55,12 +60,12 @@ namespace Selftris.Tetris.Unity
         {
             TestScenario scenario = GetScenario("gravity");
 
-            LogicConfig config = new LogicConfig(1f);
-            player = new Player(0, null, config, scenario.include);
-            PiecesManager.InitInfo();
+            LogicConfig logicConfig = new LogicConfig(1f);
+            SharedLogicConfig sharedConfig = new SharedLogicConfig(1f);
+            game = new Game(new GameConfig(1, logicConfig, sharedConfig, scenario.includeLogic, scenario.includeSharedLogic));
 
             // set up the scenario
-            Board board = (Board) player.GetLogic("board");
+            Board board = (Board)game.players[0].GetLogic("board");
             board.curPieceID = scenario.curPieceID;
             board.curPieceRot = scenario.curPieceRot;
             board.curPiecePos = scenario.curPiecePos;
@@ -77,7 +82,7 @@ namespace Selftris.Tetris.Unity
             //}
 
             // add the board renderer logic
-            player.AddLogic("renderer", new BoardRenderer(emptyColor, occupiedColor, activeColor, renderBoard));
+            game.players[0].AddLogic("renderer", new BoardRenderer(emptyColor, occupiedColor, activeColor, renderBoard));
 
             //foreach (string key in player.GetAllLogicKey()) { Debug.Log(key); }
         }
@@ -94,7 +99,7 @@ namespace Selftris.Tetris.Unity
 
         private void Update()
         {
-            player.Update(Time.deltaTime);
+            game.Update(Time.deltaTime);
         }
     }
 
@@ -104,6 +109,7 @@ namespace Selftris.Tetris.Unity
         public Rotation curPieceRot;
         public Position curPiecePos;
         public int[][] occupancy;
-        public uint include;
+        public uint includeLogic;
+        public uint includeSharedLogic;
     }
 }

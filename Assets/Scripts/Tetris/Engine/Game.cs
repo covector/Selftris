@@ -1,4 +1,7 @@
-﻿using Selftris.Tetris.Engine.Logics;
+﻿using Selftris.Tetris.Engine.Configs;
+using Selftris.Tetris.Engine.Logics;
+using Selftris.Tetris.Engine.Logics.SharedPredefined;
+using Selftris.Tetris.Engine.Utils;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -8,30 +11,36 @@ namespace Selftris.Tetris.Engine
     {
         public Game(GameConfig gameConfig)
         {
+            playerAlive = new bool[gameConfig.playerCount];
             sharedBefore = new Dictionary<string, SharedLogic>();
             sharedBeforePriority = new string[] { };
             sharedAfter = new Dictionary<string, SharedLogic>();
             sharedAfterPriority = new string[] { };
             sharedConfig = gameConfig.sharedConfig;
 
+            // Creates players
             players = new Player[gameConfig.playerCount];
             for (int i = 0; i < gameConfig.playerCount; i++)
             {
-                players[i] = new Player(i, this, gameConfig.logicConfig);
+                players[i] = new Player(i, this, gameConfig.logicConfig, gameConfig.logicSelector);
             }
+
+            // Register shared logics
+            if ((gameConfig.sharedLogicSelector & (uint)SharedLogicEnum.PIECES) > 0) { AddSharedLogic("pieces", new PiecesManager()); }
         }
 
         public Player[] players { get; }
+        public bool[] playerAlive;
+        public int aliveCount;
         public SharedLogicConfig sharedConfig;
         private Dictionary<string, SharedLogic> sharedBefore;
         private string[] sharedBeforePriority;
         private Dictionary<string, SharedLogic> sharedAfter;
         private string[] sharedAfterPriority;
 
-        public GameState Update(float dt)
+        public void Update(float dt)
         {
-            bool[] playerAlive = new bool[players.Length];
-            int aliveCount = 0;
+            aliveCount = 0;
 
             // Execute shared logics before player
             for (int i = 0; i < sharedBeforePriority.Length; i++)
@@ -44,11 +53,8 @@ namespace Selftris.Tetris.Engine
             {
                 players[i].Update(dt);
                 bool alive = players[i].alive;
-                if (alive)
-                {
-                    playerAlive[i] = true;
-                    aliveCount++;
-                }
+                playerAlive[i] = alive;
+                aliveCount += alive ? 1 : 0;
             }
 
             // Execute shared logics after player
@@ -56,8 +62,6 @@ namespace Selftris.Tetris.Engine
             {
                 sharedAfter[sharedAfterPriority[i]].Update(dt);
             }
-
-            return new GameState(playerAlive, aliveCount <= 1);
         }
 
         public SharedLogic GetSharedLogic(string key)
@@ -81,12 +85,12 @@ namespace Selftris.Tetris.Engine
             if (beforePlayer)
             {
                 sharedBefore.Add(key, logic);
-                sharedBeforePriority = Utils.InsertAt(sharedBeforePriority, priority, key);
+                sharedBeforePriority = ArrayUtils.InsertAt(sharedBeforePriority, priority, key);
             }
             else
             {
                 sharedAfter.Add(key, logic);
-                sharedAfterPriority = Utils.InsertAt(sharedAfterPriority, priority, key);
+                sharedAfterPriority = ArrayUtils.InsertAt(sharedAfterPriority, priority, key);
             }
         }
 
@@ -95,49 +99,13 @@ namespace Selftris.Tetris.Engine
             if (sharedBeforePriority.Contains(key))
             {
                 sharedBefore.Remove(key);
-                sharedBeforePriority = Utils.RemoveFrom(sharedBeforePriority, key);
+                sharedBeforePriority = ArrayUtils.RemoveFrom(sharedBeforePriority, key);
             }
             else
             {
                 sharedAfter.Remove(key);
-                sharedAfterPriority = Utils.RemoveFrom(sharedAfterPriority, key);
+                sharedAfterPriority = ArrayUtils.RemoveFrom(sharedAfterPriority, key);
             }
         }
-    }
-
-    [System.Flags]
-    public enum PredefSharedLogic
-    {
-        BOARD = 1 << 0,
-        CS = 1 << 1,
-        UTILS = 1 << 2,
-        GRAVITY = 1 << 3,
-        ALL = BOARD | CS | UTILS | GRAVITY
-    }
-
-    public readonly struct GameState
-    {
-        public GameState(bool[] playerAlive, bool gameEnded)
-        {
-            this.playerAlive = playerAlive;
-            this.gameEnded = gameEnded;
-        }
-
-        public bool[] playerAlive { get; }
-        public bool gameEnded { get; }
-    }
-
-    public readonly struct GameConfig
-    {
-        public GameConfig(int playerCount, LogicConfig logicConfig, SharedLogicConfig sharedConfig)
-        {
-            this.playerCount = playerCount;
-            this.logicConfig = logicConfig;
-            this.sharedConfig = sharedConfig;
-        }
-
-        public int playerCount { get; }
-        public LogicConfig logicConfig { get; }
-        public SharedLogicConfig sharedConfig { get; }
     }
 }

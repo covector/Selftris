@@ -1,8 +1,12 @@
-﻿namespace Selftris.Tetris.Engine.Logics
+﻿using Selftris.Tetris.Engine.Configs;
+using Selftris.Tetris.Engine.Types;
+
+namespace Selftris.Tetris.Engine.Logics.Predefined
 {
     /// <summary>
     /// Responsible for storing the board current state and information of the current piece.
     /// </summary>
+    /// <remarks>Dependent logics: <see cref="SharedPredefined.PiecesManager"></see></remarks>
     public class Board : Logic
     {
         public Board() {}

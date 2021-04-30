@@ -1,7 +1,10 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
-using Selftris.Tetris.Engine;
 using Selftris.Tetris.Engine.Logics;
+using Selftris.Tetris.Engine.Configs;
+using Selftris.Tetris.Engine.Logics.Predefined;
+using Selftris.Tetris.Engine.Types;
+using Selftris.Tetris.Engine.Logics.SharedPredefined;
 
 namespace Selftris.Tetris.Unity
 {
@@ -48,7 +51,7 @@ namespace Selftris.Tetris.Unity
                 }
             }
 
-            Position[] checkBlock = PiecesManager.GetOccupation(board.curPieceID, board.curPieceRot);
+            Position[] checkBlock = ((PiecesManager)GetSharedLogic("pieces")).GetOccupation(board.curPieceID, board.curPieceRot);
             for (int i = 0; i < checkBlock.Length; i++)
             {
                 Position vecBlock = checkBlock[i] + board.curPiecePos;

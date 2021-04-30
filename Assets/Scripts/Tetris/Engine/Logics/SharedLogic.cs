@@ -1,5 +1,12 @@
-﻿namespace Selftris.Tetris.Engine
+﻿using Selftris.Tetris.Engine.Configs;
+
+namespace Selftris.Tetris.Engine.Logics
 {
+    /// <summary>
+    /// Attach to a <see cref="Game"/> instance.<br />
+    /// Each shared logic is responsible for one particular task for all the players.<br />
+    /// E.g. Gravity logic is responsible for moving the current piece downward.
+    /// </summary>
     public abstract class SharedLogic
     {
         protected Game game;
@@ -26,18 +33,5 @@
         /// </summary>
         /// <param name="config">The configuration to be cached.</param>
         public abstract void UpdateConfig(SharedLogicConfig config);
-    }
-
-    /// <summary>
-    /// Stores the configuration for all the shared logics.
-    /// </summary>
-    public readonly struct SharedLogicConfig
-    {
-        public SharedLogicConfig(float dropSpeed)
-        {
-            this.dropSpeed = dropSpeed;
-        }
-
-        public float dropSpeed { get; }
     }
 }
