@@ -11,7 +11,7 @@ namespace Selftris.Tetris.Engine {
         /// <param name="index">The player index for uniquely identifying a player in a game.</param>
         /// <param name="game">Reference of the Game instance that owns this player object.</param>
         /// <param name="logicConfig">Configuration for the logics.</param>
-        public Player(int index, Game game, LogicConfig logicConfig)
+        public Player(int index, Game game, LogicConfig logicConfig, uint selectedLogic = (uint)PredefLogic.ALL)
         {
             // Instantiate variables
             this.index = index;
@@ -21,10 +21,10 @@ namespace Selftris.Tetris.Engine {
             logicPriority = new string[] {};
 
             // Register logics
-            AddLogic("board", new Board());
-            AddLogic("cs", new ControllerStates());
-            AddLogic("utils", new GameUtils());
-            AddLogic("gravity", new Gravity());
+            if ((selectedLogic & (uint)PredefLogic.BOARD) > 0) { AddLogic("board", new Board()); }
+            if ((selectedLogic & (uint)PredefLogic.CS) > 0) { AddLogic("cs", new ControllerStates()); }
+            if ((selectedLogic & (uint)PredefLogic.UTILS) > 0) { AddLogic("utils", new GameUtils()); }
+            if ((selectedLogic & (uint)PredefLogic.GRAVITY) > 0) { AddLogic("gravity", new Gravity()); }
         }
 
         /// <summary>The player index for uniquely identifying a player in a game.</summary>
@@ -102,5 +102,15 @@ namespace Selftris.Tetris.Engine {
             logics.Remove(key);
             logicPriority = Utils.RemoveFrom(logicPriority, key);
         }
+    }
+
+    [System.Flags]
+    public enum PredefLogic
+    {
+        BOARD = 1 << 0,
+        CS = 1 << 1,
+        UTILS = 1 << 2,
+        GRAVITY = 1 << 3,
+        ALL = BOARD | CS | UTILS | GRAVITY
     }
 }

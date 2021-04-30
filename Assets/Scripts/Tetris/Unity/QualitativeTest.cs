@@ -28,7 +28,7 @@ namespace Selftris.Tetris.Unity
                         curPieceRot = new Rotation(0),
                         curPiecePos = new Position(4, 10),
                         occupancy = GetEmptyOccupancy(),
-                        include = new string[] { "board" }
+                        include = (uint) PredefLogic.BOARD
                     };
                     testScenario.occupancy[2] = new int[10] { -1, -1, -1, -1, -1, -1, 0, -1, -1, -1 };
                     testScenario.occupancy[1] = new int[10] { -1, -1, -1, -1, 0, 0, -1, -1, -1, -1 };
@@ -41,7 +41,7 @@ namespace Selftris.Tetris.Unity
                         curPieceRot = new Rotation(0),
                         curPiecePos = new Position(4, 20),
                         occupancy = GetEmptyOccupancy(),
-                        include = new string[] { "board", "utils", "cs", "gravity" }
+                        include = (uint)(PredefLogic.BOARD | PredefLogic.UTILS | PredefLogic.CS | PredefLogic.GRAVITY)
                     };
                     testScenario.occupancy[2] = new int[10] { -1, -1, -1, -1, 0, -1, -1, -1, -1, -1 };
                     testScenario.occupancy[1] = new int[10] { -1, -1, -1, -1, 0, 0, -1, -1, -1, -1 };
@@ -53,12 +53,13 @@ namespace Selftris.Tetris.Unity
 
         private void Start()
         {
+            TestScenario scenario = GetScenario("gravity");
+
             LogicConfig config = new LogicConfig(1f);
-            player = new Player(0, null, config);
+            player = new Player(0, null, config, scenario.include);
             PiecesManager.InitInfo();
 
             // set up the scenario
-            TestScenario scenario = GetScenario("gravity");
             Board board = (Board) player.GetLogic("board");
             board.curPieceID = scenario.curPieceID;
             board.curPieceRot = scenario.curPieceRot;
@@ -66,14 +67,14 @@ namespace Selftris.Tetris.Unity
             board.occupancy = scenario.occupancy;
 
             // remove all logics that are not in the include array
-            string[] allLogics = player.GetAllLogicKey();
-            for (int i = 0; i < allLogics.Length; i++)
-            {
-                if (!scenario.include.Contains(allLogics[i]))
-                {
-                    player.RemoveLogic(allLogics[i]);
-                }
-            }
+            //string[] allLogics = player.GetAllLogicKey();
+            //for (int i = 0; i < allLogics.Length; i++)
+            //{
+            //    if (!scenario.include.Contains(allLogics[i]))
+            //    {
+            //        player.RemoveLogic(allLogics[i]);
+            //    }
+            //}
 
             // add the board renderer logic
             player.AddLogic("renderer", new BoardRenderer(emptyColor, occupiedColor, activeColor, renderBoard));
@@ -103,6 +104,6 @@ namespace Selftris.Tetris.Unity
         public Rotation curPieceRot;
         public Position curPiecePos;
         public int[][] occupancy;
-        public string[] include;
+        public uint include;
     }
 }

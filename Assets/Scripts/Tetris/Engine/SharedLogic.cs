@@ -25,7 +25,7 @@
         /// Cache the configuration from the Game instance that owns this shared logic.
         /// </summary>
         /// <param name="config">The configuration to be cached.</param>
-        public abstract void UpdateConfig(LogicConfig config);
+        public abstract void UpdateConfig(SharedLogicConfig config);
     }
 
     /// <summary>
