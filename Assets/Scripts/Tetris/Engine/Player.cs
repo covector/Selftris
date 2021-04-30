@@ -10,13 +10,13 @@ namespace Selftris.Tetris.Engine {
     {
         /// <param name="index">The player index for uniquely identifying a player in a game.</param>
         /// <param name="game">Reference of the Game instance that owns this player object.</param>
-        /// <param name="config">Configuration for the logics.</param>
-        public Player(int index, Game game, LogicConfig config)
+        /// <param name="logicConfig">Configuration for the logics.</param>
+        public Player(int index, Game game, LogicConfig logicConfig)
         {
             // Instantiate variables
             this.index = index;
             this.game = game;
-            this.config = config;
+            this.logicConfig = logicConfig;
             logics = new Dictionary<string, Logic>();
             logicPriority = new string[] {};
 
@@ -34,7 +34,7 @@ namespace Selftris.Tetris.Engine {
         /// <summary>Whether or not this player is still alive in the game.</summary>
         public bool alive = true;
         /// <summary>Configuration for the logics.</summary>
-        public LogicConfig config;
+        public LogicConfig logicConfig;
         private Dictionary<string, Logic> logics;
         private string[] logicPriority;
 
@@ -88,7 +88,7 @@ namespace Selftris.Tetris.Engine {
         public void AddLogic(string key, Logic logic, int priority = -1)
         {
             logic.InjectParent(this);
-            logic.UpdateConfig(config);
+            logic.UpdateConfig(logicConfig);
             logics.Add(key, logic);
             logicPriority = Utils.InsertAt(logicPriority, priority, key);
         }

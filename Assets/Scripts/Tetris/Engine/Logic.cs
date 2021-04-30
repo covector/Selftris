@@ -1,7 +1,7 @@
 ﻿namespace Selftris.Tetris.Engine
 {
     /// <summary>
-    /// Attach to a <see cref="Player"/> instance.<br />
+    /// Attach to a <see cref="Player"/> instance. Or attach to a <see cref="Game"/> instance as a shared logic.<br />
     /// Each logic is responsible for one particular task.<br />
     /// E.g. Gravity logic is responsible for moving the current piece downward.
     /// </summary>
@@ -34,6 +34,16 @@
         protected Logic GetLogic(string key)
         {
             return player.GetLogic(key);
+        }
+
+        /// <summary>
+        /// Reference a shared logics.
+        /// </summary>
+        /// <param name="key">The key of the shared logic to be reference.</param>
+        /// <returns>The shared logic being referenced.</returns>
+        protected SharedLogic GetSharedLogic(string key)
+        {
+            return player.game.GetSharedLogic(key);
         }
 
         /// <summary>

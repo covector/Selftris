@@ -8,13 +8,17 @@
         private const float softDropMultiplier = 4f;
         private float cooldown = 0f;
         public bool didDrop = false;
+        public bool canDrop = false;
 
         public override void Update(float dt) {
             didDrop = false;
+            canDrop = false;
 
             // check if dropping is allowed
             if (DropCheck())
             {
+                canDrop = true;
+
                 // increase cooldown
                 float dropMultiplier = ((ControllerStates)GetLogic("cs")).softDropCS ? softDropMultiplier : 1f;
                 cooldown += dt * dropSpeed * dropMultiplier;
